@@ -1,0 +1,74 @@
+:root {
+  --color-primary: #2967c9;
+  --color-primary-dark: #153447;
+  --color-accent: #0f8b8d;
+  --color-accent-mid: #2d85a3;
+  --color-accent-mid-rgb: 45, 133, 163;
+  --color-text-primary: #163746;
+  --color-text-secondary: #456777;
+  --color-text-label: #1f4d62;
+  --color-border: #c8dfeb;
+  --color-surface: #f8fdff;
+  --color-shadow-rgb: 17, 45, 78;
+}
+
+html,
+body,
+#root {
+  width: 100dvw;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family:
+    "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana,
+    sans-serif;
+}
+
+body {
+  --sb-track-color: #ffffff;
+  --sb-thumb-color: #746baf;
+  --sb-size: 10px;
+  --sb-radius: 32px;
+  --sb-border: 2px;
+
+  ::-webkit-scrollbar {
+    width: var(--sb-size);
+    height: var(--sb-size);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: var(--sb-radius);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border: var(--sb-border) solid var(--sb-track-color);
+    border-radius: var(--sb-radius);
+  }
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}
+
+#root {
+  background:
+    radial-gradient(circle at top right, rgba(68, 120, 255, 0.22), transparent 40%),
+    radial-gradient(circle at left bottom, rgba(0, 176, 155, 0.2), transparent 45%),
+    linear-gradient(145deg, #f6fbff 0%, #e7f6fb 100%);
+  padding: 1em;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  p {
+    margin: 0px;
+    padding: 0px;
+  }
+}

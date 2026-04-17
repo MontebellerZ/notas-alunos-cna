@@ -1,0 +1,95 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  border: 0;
+  background: rgba(var(--color-shadow-rgb), 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+  z-index: 14;
+}
+
+.backdropVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(320px, 85vw);
+  background: linear-gradient(165deg, #f8fdff 0%, #e9f7fb 100%);
+  border-right: 1px solid rgba(var(--color-accent-mid-rgb), 0.25);
+  box-shadow: 6px 0 18px rgba(var(--color-shadow-rgb), 0.22);
+  transform: translateX(-104%);
+  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.drawerOpen {
+  transform: translateX(0);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(var(--color-accent-mid-rgb), 0.28);
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.closeButton {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(var(--color-accent-mid-rgb), 0.16);
+  color: var(--color-primary-dark);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: transform 160ms ease, background-color 160ms ease;
+
+  &:hover {
+    background: rgba(var(--color-accent-mid-rgb), 0.28);
+    transform: translateY(-1px);
+  }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  border-radius: 10px;
+  padding: 0.72rem 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: color 170ms ease, background-color 170ms ease, transform 170ms ease;
+
+  &:hover {
+    background: rgba(var(--color-accent-mid-rgb), 0.18);
+    color: var(--color-primary-dark);
+    transform: translateX(2px);
+  }
+}
+
+.linkActive {
+  background: linear-gradient(90deg, rgba(var(--color-accent-mid-rgb), 0.28), rgba(var(--color-accent-mid-rgb), 0.12));
+  color: var(--color-primary-dark);
+  box-shadow: inset 3px 0 0 var(--color-primary);
+}
