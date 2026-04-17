@@ -1,0 +1,14 @@
+{
+  "name": "notas-alunos-cna",
+  "version": "1.0.0",
+  "author": "Filipe Montebeller Rocha",
+  "license": "MIT",
+  "scripts": {
+    "dev:front": "yarn --cwd frontend dev",
+    "dev:back": "yarn --cwd backend dev",
+    "dev": "concurrently \"yarn dev:front\" \"yarn dev:back\""
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

@@ -10,6 +10,7 @@ const api = axios.create({
 
 function normalizeAxiosError(err: unknown): never {
   if (axios.isAxiosError(err)) {
+    console.log(err.response?.data ?? err);
     throw err.response?.data ?? err;
   }
 

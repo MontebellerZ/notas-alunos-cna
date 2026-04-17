@@ -5,7 +5,9 @@
 
   h1 {
     font-size: 1.3em;
-    color: var(--color-text-primary);
+    color: var(--color-primary);
+    font-weight: 800;
+    letter-spacing: -0.01em;
   }
 
   > * {
@@ -27,9 +29,9 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  border: 1px solid rgba(var(--color-accent-mid-rgb), 0.35);
-  background: linear-gradient(145deg, #ffffff 0%, #ebf8fb 100%);
-  color: var(--color-text-primary);
+  border: 1.5px solid rgba(var(--color-accent-mid-rgb), 0.3);
+  background: linear-gradient(145deg, #ffffff 0%, #fff5f5 100%);
+  color: var(--color-primary-dark);
   border-radius: 10px;
   height: 38px;
   padding: 0 0.75rem;
@@ -43,8 +45,8 @@
 
   &:hover {
     transform: translateY(-1px);
-    border-color: rgba(var(--color-accent-mid-rgb), 0.55);
-    box-shadow: 0 6px 14px rgba(var(--color-shadow-rgb), 0.16);
+    border-color: rgba(var(--color-accent-mid-rgb), 0.6);
+    box-shadow: 0 6px 14px rgba(var(--color-shadow-rgb), 0.14);
   }
 
   &:active {

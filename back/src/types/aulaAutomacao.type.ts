@@ -1,4 +1,4 @@
-export interface Aula {
+export type TAulaAutomacao = {
   dia: string;
   horario: string;
-}
+};

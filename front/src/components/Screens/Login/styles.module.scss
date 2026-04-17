@@ -25,7 +25,8 @@
 
 .title {
   font-size: 1.8rem;
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
+  font-weight: 800;
 }
 
 .subtitle {
@@ -60,11 +61,12 @@
 }
 
 .input {
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border);
   border-radius: 10px;
   background-color: var(--color-surface);
   padding: 12px 14px;
   font-size: 1rem;
+  font-family: inherit;
   color: var(--color-text-primary);
   margin-bottom: 8px;
   outline: none;
@@ -73,8 +75,8 @@
     box-shadow 0.2s ease;
 
   &:focus {
-    border-color: var(--color-accent-mid);
-    box-shadow: 0px 0px 0px 3px rgba(var(--color-accent-mid-rgb), 0.15);
+    border-color: var(--color-primary);
+    box-shadow: 0px 0px 0px 3px rgba(var(--color-accent-mid-rgb), 0.14);
   }
 
   &:disabled {

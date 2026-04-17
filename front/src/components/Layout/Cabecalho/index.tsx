@@ -16,7 +16,7 @@ function Cabecalho(props: ICabecalho) {
       </div>
 
       <div>
-        <h1>Gaiden Operações</h1>
+        <h1>Aulas CNA</h1>
       </div>
 
       <div></div>

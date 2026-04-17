@@ -1,15 +1,16 @@
 :root {
-  --color-primary: #2967c9;
-  --color-primary-dark: #153447;
-  --color-accent: #0f8b8d;
-  --color-accent-mid: #2d85a3;
-  --color-accent-mid-rgb: 45, 133, 163;
-  --color-text-primary: #163746;
-  --color-text-secondary: #456777;
-  --color-text-label: #1f4d62;
-  --color-border: #c8dfeb;
-  --color-surface: #f8fdff;
-  --color-shadow-rgb: 17, 45, 78;
+  /* CNA Brand Identity */
+  --color-primary: #e31e24;
+  --color-primary-dark: #8b0e12;
+  --color-accent: #ff5458;
+  --color-accent-mid: #c4161c;
+  --color-accent-mid-rgb: 196, 22, 28;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #5a5a5a;
+  --color-text-label: #333333;
+  --color-border: #f0dada;
+  --color-surface: #fffafa;
+  --color-shadow-rgb: 90, 8, 8;
 }
 
 html,
@@ -20,14 +21,12 @@ body,
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family:
-    "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana,
-    sans-serif;
+  font-family: "Nunito", "Nunito Sans", Helvetica, Arial, sans-serif;
 }
 
 body {
   --sb-track-color: #ffffff;
-  --sb-thumb-color: #746baf;
+  --sb-thumb-color: #e31e24;
   --sb-size: 10px;
   --sb-radius: 32px;
   --sb-border: 2px;
@@ -57,9 +56,9 @@ body {
 
 #root {
   background:
-    radial-gradient(circle at top right, rgba(68, 120, 255, 0.22), transparent 40%),
-    radial-gradient(circle at left bottom, rgba(0, 176, 155, 0.2), transparent 45%),
-    linear-gradient(145deg, #f6fbff 0%, #e7f6fb 100%);
+    radial-gradient(circle at top right, rgba(227, 30, 36, 0.1), transparent 40%),
+    radial-gradient(circle at left bottom, rgba(255, 84, 88, 0.07), transparent 45%),
+    linear-gradient(145deg, #fff8f8 0%, #fff0f0 100%);
   padding: 1em;
 
   h1,

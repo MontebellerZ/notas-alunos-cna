@@ -54,7 +54,7 @@ function Login() {
             autoComplete="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="seu@email.com"
+            placeholder="professor@cna.com.br"
             className={styles.input}
             disabled={isLoading}
           />

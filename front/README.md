@@ -1,75 +1,28 @@
-# React + TypeScript + Vite
+# Frontend Desktop (Electron + React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este frontend roda como app desktop com Electron e usa Vite no modo desenvolvimento.
 
-Currently, two official plugins are available:
+## Scripts
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `npm run dev`: sobe Vite e abre o Electron apontando para `http://localhost:5173`
+- `npm run dev:web`: sobe apenas o frontend web (Vite)
+- `npm run build`: gera build de produção do frontend em `dist/`
+- `npm run start`: abre o Electron em modo produção (carrega `dist/index.html`)
+- `npm run dist`: gera instalador Windows via electron-builder em `release/`
 
-## React Compiler
+## Fluxo recomendado
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+1. Desenvolvimento desktop: `npm run dev`
+2. Build de produção: `npm run build`
+3. Teste local da build desktop: `npm run start`
+4. Geração de instalador: `npm run dist`
 
-Note: This will impact Vite dev & build performances.
+## Estrutura Electron
 
-## Expanding the ESLint configuration
+- `electron/main.js`: processo principal (criação da janela e ciclo de vida do app)
+- `electron/preload.js`: camada segura para expor APIs ao renderer
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Observações
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- A porta do Vite é fixa (`5173`) para sincronizar com o Electron.
+- `contextIsolation` está habilitado e `nodeIntegration` está desabilitado por segurança.

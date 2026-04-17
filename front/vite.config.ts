@@ -1,11 +1,13 @@
-import { defineConfig } from 'vite'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
+import { defineConfig } from "vite";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
+import babel from "@rolldown/plugin-babel";
 
-// https://vite.dev/config/
+if (!process.env.VITE_PORT) throw new Error("process.env.VITE_PORT não configurado");
+
 export default defineConfig({
-  plugins: [
-    react(),
-    babel({ presets: [reactCompilerPreset()] })
-  ],
-})
+  server: {
+    port: +process.env.VITE_PORT,
+    strictPort: true,
+  },
+  plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
+});
