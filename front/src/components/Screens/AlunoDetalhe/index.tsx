@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { useGoBack } from "../../../hooks/useGoBack";
 import { toast } from "react-toastify";
 import { IoArrowBack, IoPencilOutline, IoSchoolOutline } from "react-icons/io5";
 import AlunoService from "../../../services/aluno.service";
@@ -16,6 +17,7 @@ type ModalState =
 function AlunoDetalhe() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const goBack = useGoBack();
 
   const [aluno, setAluno] = useState<TAlunoDetalhe | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -100,7 +102,7 @@ function AlunoDetalhe() {
     <div className={styles.page}>
       {/* Cabeçalho */}
       <div className={styles.header}>
-        <Button variant="icon" title="Voltar" onClick={() => navigate("/main/alunos")}>
+        <Button variant="icon" title="Voltar" onClick={() => goBack("/main/alunos")}>
           <IoArrowBack />
         </Button>
         <div className={styles.headerInfo}>

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { useGoBack } from "../../../hooks/useGoBack";
 import { toast } from "react-toastify";
 import {
   IoArrowBackOutline,
@@ -59,6 +60,7 @@ function ValorIcon({ valor }: { valor: ValorNota }) {
 function Avaliacao() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const goBack = useGoBack();
   const atividadeId = Number(id);
 
   const [data, setData] = useState<TAvaliacaoData | null>(null);
@@ -148,7 +150,7 @@ function Avaliacao() {
     if (isDirty) {
       setConfirmSair(true);
     } else {
-      navigate(-1);
+      goBack(`/main/atividades/${atividadeId}`);
     }
   };
 
@@ -275,7 +277,7 @@ function Avaliacao() {
               <Button variant="secondary" onClick={() => setConfirmSair(false)}>
                 Cancelar
               </Button>
-              <Button variant="danger" onClick={() => navigate(-1)}>
+              <Button variant="danger" onClick={() => goBack(`/main/atividades/${atividadeId}`)}>
                 Sair sem salvar
               </Button>
             </div>

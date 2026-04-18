@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { useGoBack } from "../../../hooks/useGoBack";
 import { toast } from "react-toastify";
 import {
   IoArrowBackOutline,
@@ -63,6 +64,7 @@ function formatarData(data?: string | null) {
 function TurmaDetalhe() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const goBack = useGoBack();
   const turmaId = Number(id);
 
   const [turma, setTurma] = useState<TTurmaDetalhe | null>(null);
@@ -399,7 +401,7 @@ function TurmaDetalhe() {
     return (
       <div className={styles.page}>
         <p className={styles.empty}>Turma não encontrada.</p>
-        <Button onClick={() => navigate("/main/turmas")}>
+        <Button onClick={() => goBack("/main/turmas")}>
           <IoArrowBackOutline /> Voltar
         </Button>
       </div>
@@ -410,7 +412,7 @@ function TurmaDetalhe() {
     <div className={styles.page}>
       {/* ── Cabeçalho ──────────────────────────────────────── */}
       <div className={styles.detalheHeader}>
-        <Button variant="icon" title="Voltar" onClick={() => navigate("/main/turmas")}>
+        <Button variant="icon" title="Voltar" onClick={() => goBack("/main/turmas")}>
           <IoArrowBackOutline />
         </Button>
         <div className={styles.detalheHeaderInfo}>

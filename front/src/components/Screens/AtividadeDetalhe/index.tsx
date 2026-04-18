@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { useGoBack } from "../../../hooks/useGoBack";
 import { toast } from "react-toastify";
 import {
   IoArrowBackOutline,
@@ -51,6 +52,7 @@ function gerarNomesIntervalo(inicio: string, fim: string): string[] | null {
 function AtividadeDetalhe() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const goBack = useGoBack();
   const atividadeId = Number(id);
 
   const [atividade, setAtividade] = useState<TAtividadeDetalhe | null>(null);
@@ -262,7 +264,7 @@ function AtividadeDetalhe() {
     return (
       <div className={styles.page}>
         <p className={styles.empty}>Atividade não encontrada.</p>
-        <Button onClick={() => navigate("/main/turmas")}>
+        <Button onClick={() => goBack("/main/turmas")}>
           <IoArrowBackOutline /> Voltar
         </Button>
       </div>
@@ -275,8 +277,8 @@ function AtividadeDetalhe() {
       <div className={styles.header}>
         <Button
           variant="icon"
-          title="Voltar para turma"
-          onClick={() => navigate(`/main/turmas/${atividade.turmaId}`)}
+          title="Voltar"
+          onClick={() => goBack(`/main/turmas/${atividade.turmaId}`)}
         >
           <IoArrowBackOutline />
         </Button>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { useGoBack } from "../../../hooks/useGoBack";
 import { toast } from "react-toastify";
 import {
   IoArrowBackOutline,
@@ -35,6 +36,7 @@ function pendentesCount(notas: TTurmaNotas["alunos"][number]["notas"]): number {
 export default function TurmaNotas() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const goBack = useGoBack();
   const turmaId = Number(id);
 
   const [data, setData] = useState<TTurmaNotas | null>(null);
@@ -73,7 +75,7 @@ export default function TurmaNotas() {
     return (
       <div className={styles.page}>
         <p className={styles.empty}>Turma não encontrada.</p>
-        <Button onClick={() => navigate("/main/turmas")}>
+        <Button onClick={() => goBack("/main/turmas")}>
           <IoArrowBackOutline /> Voltar
         </Button>
       </div>
@@ -97,8 +99,8 @@ export default function TurmaNotas() {
       <div className={styles.header}>
         <Button
           variant="icon"
-          title="Voltar para turma"
-          onClick={() => navigate(`/main/turmas/${turmaId}`)}
+          title="Voltar"
+          onClick={() => goBack(`/main/turmas/${turmaId}`)}
         >
           <IoArrowBackOutline />
         </Button>
