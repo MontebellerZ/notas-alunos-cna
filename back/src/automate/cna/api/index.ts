@@ -51,7 +51,6 @@ class CnaApi {
 
         const nome = html(tds[0]).text().trim();
         const sala = html(tds[3]).text().trim();
-        const alunos = parseInt(html(tds[5]).text().trim(), 10) || 0;
 
         const dias = html(tds[7]).find("li");
         const horarios = html(tds[8]).find("li");
@@ -70,7 +69,7 @@ class CnaApi {
 
         const link = html(tds[15]).find("a").attr("href") ?? "";
 
-        turmas.push({ nome, sala, alunos, aulas, situacao, inicio, fim, link });
+        turmas.push({ nome, sala, aulas, situacao, inicio, fim, link });
       });
     }
 

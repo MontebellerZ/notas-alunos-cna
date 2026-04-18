@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { BadRequestError } from "../errors/errors";
-import { Turma } from "@prisma/client";
-import TurmaService from "../services/turma.service";
+import turmaService from "../services/turma.service";
 
 const turmaRoutes = Router();
 
@@ -12,19 +11,29 @@ turmaRoutes.get("/", async (req, res) => {
   const page = Number.isFinite(pageRaw) ? pageRaw : undefined;
   const limit = Number.isFinite(limitRaw) ? limitRaw : undefined;
 
-  const result = await TurmaService.GetPaginated(page, limit);
-  
+  const result = await turmaService.getPaginated(page, limit);
   res.send(result);
 });
 
-turmaRoutes.put("/", async (req, res) => {
-  const body = req.body as Turma;
+turmaRoutes.get("/:id", async (req, res) => {
+  const id = Number(req.params.id);
 
-  if (!Number.isFinite(body.id)) {
-    throw new BadRequestError("Id da turma é obrigatório.");
+  if (!Number.isFinite(id)) {
+    throw new BadRequestError("Id da turma inválido.");
   }
 
-  const result = await TurmaService.Update(body);
+  const result = await turmaService.getById(id);
+  res.send(result);
+});
+
+turmaRoutes.put("/:id", async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isFinite(id)) {
+    throw new BadRequestError("Id da turma inválido.");
+  }
+
+  const result = await turmaService.update({ ...req.body, id });
   res.send(result);
 });
 
@@ -35,7 +44,7 @@ turmaRoutes.delete("/:id", async (req, res) => {
     throw new BadRequestError("Id da turma inválido.");
   }
 
-  const result = await TurmaService.Delete(id);
+  const result = await turmaService.delete(id);
   res.send(result);
 });
 

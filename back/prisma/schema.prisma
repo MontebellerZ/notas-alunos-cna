@@ -7,21 +7,75 @@ datasource db {
 }
 
 model Turma {
-  id       Int     @id @default(autoincrement())
-  nome     String
-  sala     String
-  alunos   Int
-  situacao String
-  inicio   String
-  fim      String
-  aulas    Aula[]
-  ativo    Boolean @default(true)
+  id         Int         @id @default(autoincrement())
+  nome       String
+  sala       String?
+  situacao   String?
+  inicio     String?
+  fim        String?
+  aulas      Aula[]
+  alunos     Aluno[]
+  atividades Atividade[]
+  ativo      Boolean     @default(true)
 }
 
 model Aula {
-  id      Int    @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   dia     String
   horario String
-  turma   Turma  @relation(fields: [turmaId], references: [id])
+  turma   Turma   @relation(fields: [turmaId], references: [id])
   turmaId Int
+  ativo   Boolean @default(true)
+}
+
+model Aluno {
+  id      Int     @id @default(autoincrement())
+  nome    String
+  idade   Int?
+  turma   Turma   @relation(fields: [turmaId], references: [id])
+  turmaId Int
+  notas   Nota[]
+  ativo   Boolean @default(true)
+}
+
+model Atividade {
+  id             Int             @id @default(autoincrement())
+  capitulo       String
+  peso           Float?
+  turma          Turma           @relation(fields: [turmaId], references: [id])
+  turmaId        Int
+  notas          Nota[]
+  atividadeItens AtividadeItem[]
+  ativo          Boolean         @default(true)
+}
+
+model AtividadeItem {
+  id          Int        @id @default(autoincrement())
+  nome        String
+  peso        Float      @default(1)
+  atividade   Atividade  @relation(fields: [atividadeId], references: [id])
+  atividadeId Int
+  notaItens   NotaItem[]
+  ativo       Boolean    @default(true)
+}
+
+model Nota {
+  id          Int        @id @default(autoincrement())
+  valor       Float?
+  aluno       Aluno      @relation(fields: [alunoId], references: [id])
+  alunoId     Int
+  atividade   Atividade  @relation(fields: [atividadeId], references: [id])
+  atividadeId Int
+  notaItens   NotaItem[]
+  ativo       Boolean    @default(true)
+}
+
+model NotaItem {
+  id              Int           @id @default(autoincrement())
+  valor           Float?
+  nota            Nota          @relation(fields: [notaId], references: [id])
+  notaId          Int
+  atividadeItem   AtividadeItem @relation(fields: [atividadeItemId], references: [id])
+  atividadeItemId Int
+  ativo           Boolean       @default(true)
 }
