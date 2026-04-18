@@ -5,6 +5,10 @@ class AtividadeService extends BaseService {
   constructor() {
     super(atividadeRepository, "Atividade");
   }
+
+  async getByIdWithDetails(id: number) {
+    return await atividadeRepository.getByIdWithDetails(id);
+  }
 }
 
 export default new AtividadeService();

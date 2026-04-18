@@ -1,9 +1,13 @@
-import type { TAtividade, TAtividadeCreate } from "../types/atividade.type";
+import type { TAtividade, TAtividadeCreate, TAtividadeDetalhe } from "../types/atividade.type";
 import BaseService from "./base.service";
 
 class AtividadeService extends BaseService {
   static async create(data: TAtividadeCreate): Promise<TAtividade> {
     return await this.post<TAtividade>("/atividade", data);
+  }
+
+  static async getByIdWithDetails(id: number): Promise<TAtividadeDetalhe> {
+    return await this.get<TAtividadeDetalhe>(`/atividade/${id}/detalhes`);
   }
 
   static async update(id: number, data: Partial<Pick<TAtividadeCreate, "capitulo" | "peso">>): Promise<TAtividade> {

@@ -1,3 +1,5 @@
+import type { TAtividadeItem } from "./atividadeItem.type";
+
 export type TAtividade = {
   id: number;
   capitulo: string;
@@ -7,3 +9,8 @@ export type TAtividade = {
 };
 
 export type TAtividadeCreate = Omit<TAtividade, "id" | "ativo">;
+
+export type TAtividadeDetalhe = TAtividade & {
+  turma: { id: number; nome: string };
+  atividadeItens: TAtividadeItem[];
+};

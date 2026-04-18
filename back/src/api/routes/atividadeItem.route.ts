@@ -15,6 +15,11 @@ atividadeItemRoutes.get("/", async (req, res) => {
   res.send(result);
 });
 
+atividadeItemRoutes.post("/", async (req, res) => {
+  const result = await atividadeItemService.create(req.body);
+  res.status(201).send(result);
+});
+
 atividadeItemRoutes.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
 
