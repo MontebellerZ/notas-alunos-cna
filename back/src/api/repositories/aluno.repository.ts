@@ -6,6 +6,23 @@ class AlunoRepository extends BaseRepository {
     super(prisma.aluno as any);
   }
 
+  async getAll() {
+    return await prisma.aluno.findMany({
+      where: { ativo: true },
+      orderBy: { nome: "asc" },
+    });
+  }
+
+  async getPaginated(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    const where = { ativo: true };
+    const [items, total] = await Promise.all([
+      prisma.aluno.findMany({ where, orderBy: { nome: "asc" }, skip, take: limit }),
+      prisma.aluno.count({ where }),
+    ]);
+    return { items, total };
+  }
+
   async searchByNome(nome: string) {
     return await prisma.aluno.findMany({
       where: {
@@ -24,7 +41,7 @@ class AlunoRepository extends BaseRepository {
         turmas: {
           where: { ativo: true },
           include: { turma: true },
-          orderBy: { turmaId: "asc" },
+          orderBy: { turma: { nome: "asc" } },
         },
       },
     });

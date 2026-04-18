@@ -21,6 +21,24 @@ class TurmaRepository extends BaseRepository {
     super(prisma.turma as any);
   }
 
+  async getAll() {
+    const turmas = await prisma.turma.findMany({
+      where: { ativo: true },
+      orderBy: { nome: "asc" },
+    });
+    return turmas;
+  }
+
+  async getPaginated(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    const where = { ativo: true };
+    const [items, total] = await Promise.all([
+      prisma.turma.findMany({ where, orderBy: { nome: "asc" }, skip, take: limit }),
+      prisma.turma.count({ where }),
+    ]);
+    return { items, total };
+  }
+
   async getByIdWithDetails(id: number) {
     const turma = await prisma.turma.findUnique({
       where: { id },
@@ -28,7 +46,7 @@ class TurmaRepository extends BaseRepository {
         alunos: {
           where: { ativo: true },
           include: { aluno: true },
-          orderBy: { alunoId: "asc" },
+          orderBy: { aluno: { nome: "asc" } },
         },
         atividades: { where: { ativo: true }, orderBy: { id: "asc" } },
       },
