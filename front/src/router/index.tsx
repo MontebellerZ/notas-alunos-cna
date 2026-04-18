@@ -3,6 +3,7 @@ import Layout from "../components/Layout";
 import Home from "../components/Screens/Home";
 import Login from "../components/Screens/Login";
 import Turmas from "../components/Screens/Turmas";
+import TurmaDetalhe from "../components/Screens/TurmaDetalhe";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "turmas",
         element: <Turmas />,
+      },
+      {
+        path: "turmas/:id",
+        element: <TurmaDetalhe />,
       },
     ],
   },

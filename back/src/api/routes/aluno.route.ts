@@ -5,6 +5,14 @@ import alunoService from "../services/aluno.service";
 const alunoRoutes = Router();
 
 alunoRoutes.get("/", async (req, res) => {
+  const search = req.query.search as string | undefined;
+
+  if (search !== undefined) {
+    const result = await alunoService.searchByNome(search);
+    res.send(result);
+    return;
+  }
+
   const pageRaw = Number(req.query.page);
   const limitRaw = Number(req.query.limit);
 
@@ -13,6 +21,11 @@ alunoRoutes.get("/", async (req, res) => {
 
   const result = await alunoService.getPaginated(page, limit);
   res.send(result);
+});
+
+alunoRoutes.post("/", async (req, res) => {
+  const result = await alunoService.create(req.body);
+  res.status(201).send(result);
 });
 
 alunoRoutes.get("/:id", async (req, res) => {

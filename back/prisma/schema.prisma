@@ -7,35 +7,35 @@ datasource db {
 }
 
 model Turma {
-  id         Int         @id @default(autoincrement())
+  id         Int          @id @default(autoincrement())
   nome       String
   sala       String?
   situacao   String?
   inicio     String?
   fim        String?
-  aulas      Aula[]
-  alunos     Aluno[]
+  aulasJson  String       @default("[]") @map("aulas_json")
+  alunos     TurmaAluno[]
   atividades Atividade[]
-  ativo      Boolean     @default(true)
+  ativo      Boolean      @default(true)
 }
 
-model Aula {
-  id      Int     @id @default(autoincrement())
-  dia     String
-  horario String
+model TurmaAluno {
   turma   Turma   @relation(fields: [turmaId], references: [id])
   turmaId Int
+  aluno   Aluno   @relation(fields: [alunoId], references: [id])
+  alunoId Int
   ativo   Boolean @default(true)
+
+  @@id([turmaId, alunoId])
 }
 
 model Aluno {
-  id      Int     @id @default(autoincrement())
-  nome    String
-  idade   Int?
-  turma   Turma   @relation(fields: [turmaId], references: [id])
-  turmaId Int
-  notas   Nota[]
-  ativo   Boolean @default(true)
+  id     Int          @id @default(autoincrement())
+  nome   String
+  idade  Int?
+  turmas TurmaAluno[]
+  notas  Nota[]
+  ativo  Boolean      @default(true)
 }
 
 model Atividade {

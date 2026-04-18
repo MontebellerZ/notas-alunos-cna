@@ -99,3 +99,18 @@
     border-color: rgba(var(--color-accent-mid-rgb), 0.35);
   }
 }
+
+.variant-icon-danger {
+  background: #ffffff;
+  border: 1.5px solid var(--color-primary);
+  color: var(--color-primary);
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 1rem;
+  border-radius: 8px;
+
+  &:hover:not(:disabled) {
+    background: rgba(var(--color-accent-mid-rgb), 0.06);
+  }
+}

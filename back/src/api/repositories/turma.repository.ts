@@ -1,9 +1,108 @@
 import BaseRepository from "./base.repository";
 import prisma from "../../../prisma";
+import { randomUUID } from "crypto";
+
+export interface AulaJson {
+  id: string;
+  dia: string;
+  horario: string;
+}
+
+function parseAulas(aulasJson: string): AulaJson[] {
+  try {
+    return JSON.parse(aulasJson) as AulaJson[];
+  } catch {
+    return [];
+  }
+}
 
 class TurmaRepository extends BaseRepository {
   constructor() {
     super(prisma.turma as any);
+  }
+
+  async getByIdWithDetails(id: number) {
+    const turma = await prisma.turma.findUnique({
+      where: { id },
+      include: {
+        alunos: {
+          where: { ativo: true },
+          include: { aluno: true },
+          orderBy: { alunoId: "asc" },
+        },
+        atividades: { where: { ativo: true }, orderBy: { id: "asc" } },
+      },
+    });
+
+    if (!turma) return null;
+
+    const { aulasJson, ...rest } = turma;
+    return { ...rest, aulas: parseAulas(aulasJson) };
+  }
+
+  async adicionarAula(turmaId: number, dia: string, horario: string) {
+    const turma = await prisma.turma.findUnique({ where: { id: turmaId } });
+    if (!turma) return null;
+
+    const aulas = parseAulas(turma.aulasJson);
+    const novaAula: AulaJson = { id: randomUUID(), dia, horario };
+    aulas.push(novaAula);
+
+    await prisma.turma.update({
+      where: { id: turmaId },
+      data: { aulasJson: JSON.stringify(aulas) },
+    });
+
+    return novaAula;
+  }
+
+  async atualizarAula(turmaId: number, aulaId: string, dia: string, horario: string) {
+    const turma = await prisma.turma.findUnique({ where: { id: turmaId } });
+    if (!turma) return null;
+
+    const aulas = parseAulas(turma.aulasJson);
+    const idx = aulas.findIndex((a) => a.id === aulaId);
+    if (idx === -1) return null;
+
+    aulas[idx] = { id: aulaId, dia, horario };
+
+    await prisma.turma.update({
+      where: { id: turmaId },
+      data: { aulasJson: JSON.stringify(aulas) },
+    });
+
+    return aulas[idx];
+  }
+
+  async removerAula(turmaId: number, aulaId: string) {
+    const turma = await prisma.turma.findUnique({ where: { id: turmaId } });
+    if (!turma) return false;
+
+    const aulas = parseAulas(turma.aulasJson);
+    const novas = aulas.filter((a) => a.id !== aulaId);
+    if (novas.length === aulas.length) return false;
+
+    await prisma.turma.update({
+      where: { id: turmaId },
+      data: { aulasJson: JSON.stringify(novas) },
+    });
+
+    return true;
+  }
+
+  async vincularAluno(turmaId: number, alunoId: number) {
+    return await prisma.turmaAluno.upsert({
+      where: { turmaId_alunoId: { turmaId, alunoId } },
+      update: { ativo: true },
+      create: { turmaId, alunoId },
+    });
+  }
+
+  async desvincularAluno(turmaId: number, alunoId: number) {
+    return await prisma.turmaAluno.update({
+      where: { turmaId_alunoId: { turmaId, alunoId } },
+      data: { ativo: false },
+    });
   }
 }
 

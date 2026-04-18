@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { IoPencilOutline, IoTrashOutline, IoAddOutline } from "react-icons/io5";
 import TurmaService from "../../../services/turma.service";
@@ -26,6 +27,7 @@ type ModalState =
   | { tipo: "excluir"; turma: TTurma };
 
 function Turmas() {
+  const navigate = useNavigate();
   const [turmas, setTurmas] = useState<TTurma[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -169,7 +171,14 @@ function Turmas() {
       {!isLoading && turmas.length > 0 && (
         <div className={styles.grid}>
           {turmas.map((turma) => (
-            <div key={turma.id} className={styles.card}>
+            <div
+              key={turma.id}
+              className={styles.card}
+              onClick={() => navigate(`/main/turmas/${turma.id}`)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && navigate(`/main/turmas/${turma.id}`)}
+            >
               <div className={styles.cardBody}>
                 <span className={styles.cardNome}>{turma.nome}</span>
                 {turma.sala && (
@@ -188,7 +197,7 @@ function Turmas() {
                   variant="icon"
                   title="Editar"
                   aria-label="Editar turma"
-                  onClick={() => abrirEditar(turma)}
+                  onClick={(e) => { e.stopPropagation(); abrirEditar(turma); }}
                 >
                   <IoPencilOutline />
                 </Button>
@@ -197,7 +206,7 @@ function Turmas() {
                   size="sm"
                   title="Excluir"
                   aria-label="Excluir turma"
-                  onClick={() => abrirExcluir(turma)}
+                  onClick={(e) => { e.stopPropagation(); abrirExcluir(turma); }}
                 >
                   <IoTrashOutline />
                 </Button>

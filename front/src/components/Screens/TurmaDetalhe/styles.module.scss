@@ -1,0 +1,289 @@
+.page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Cabeçalho ──────────────────────────────────────── */
+
+.detalheHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.detalheHeaderInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.detalheHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+/* ── Badges ──────────────────────────────────────────── */
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.badge-futura {
+  background: #e8f4fd;
+  color: #1565c0;
+}
+
+.badge-em-andamento {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge-encerrada {
+  background: #fce4ec;
+  color: #b71c1c;
+}
+
+/* ── Info card ───────────────────────────────────────── */
+
+.infoCard {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(var(--color-shadow-rgb), 0.06);
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.infoLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-label, #888);
+}
+
+.infoValue {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-primary, #222);
+}
+
+/* ── Sections ────────────────────────────────────────── */
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.section {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 2px 8px rgba(var(--color-shadow-rgb), 0.06);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* ── Item list ───────────────────────────────────────── */
+
+.itemList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-surface, #fffafa);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.itemMain {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #222);
+}
+
+.itemSub {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #666);
+}
+
+/* ── Empty ───────────────────────────────────────────── */
+
+.empty {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary, #888);
+  font-style: italic;
+}
+
+/* ── Formulário ─────────────────────────────────────── */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-label, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: #fff;
+  color: var(--color-text-primary, #222);
+  outline: none;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: var(--color-primary);
+  }
+}
+
+/* ── Busca de alunos ─────────────────────────────────── */
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.6rem;
+  color: var(--color-text-secondary, #888);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.inputSearch {
+  @extend .input;
+  padding-left: 2.1rem;
+}
+
+.searchHint {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary, #888);
+  font-style: italic;
+}
+
+.searchList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.searchItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  background: var(--color-surface, #fffafa);
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  font-size: 0.88rem;
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 0.25rem 0;
+}
+
+/* ── Skeletons ───────────────────────────────────────── */
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+%skeleton {
+  background: linear-gradient(90deg, #f0e4e4 25%, #f8efef 50%, #f0e4e4 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+.skeletonHeader {
+  @extend %skeleton;
+  height: 2rem;
+  width: 60%;
+}
+
+.skeletonInfo {
+  @extend %skeleton;
+  height: 4rem;
+  border-radius: 12px;
+}
+
+.skeletonSection {
+  @extend %skeleton;
+  height: 8rem;
+  border-radius: 12px;
+}

@@ -15,6 +15,11 @@ atividadeRoutes.get("/", async (req, res) => {
   res.send(result);
 });
 
+atividadeRoutes.post("/", async (req, res) => {
+  const result = await atividadeService.create(req.body);
+  res.status(201).send(result);
+});
+
 atividadeRoutes.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
 

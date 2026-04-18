@@ -1,6 +1,6 @@
 import styles from "./styles.module.scss";
 
-type ButtonVariant = "primary" | "secondary" | "danger" | "icon";
+type ButtonVariant = "primary" | "secondary" | "danger" | "icon" | "icon-danger";
 type ButtonSize = "sm" | "md" | "lg";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -21,7 +21,7 @@ function Button({
   const classes = [
     styles.button,
     styles[`variant-${variant}`],
-    variant !== "icon" ? styles[`size-${size}`] : "",
+    variant !== "icon" && variant !== "icon-danger" ? styles[`size-${size}`] : "",
     fullWidth ? styles.fullWidth : "",
     className ?? "",
   ]
