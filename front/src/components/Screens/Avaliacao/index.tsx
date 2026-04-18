@@ -35,10 +35,13 @@ function calcTotal(
   itens: TAtividadeItem[],
   grade: GradeMap
 ): number {
-  return itens.reduce((acc, item) => {
+  const pesoTotal = itens.reduce((acc, item) => acc + item.peso, 0);
+  if (pesoTotal === 0) return 0;
+  const soma = itens.reduce((acc, item) => {
     const val = grade[`${alunoId}-${item.id}`];
     return acc + (val ?? 0) * item.peso;
   }, 0);
+  return (soma / pesoTotal) * 10;
 }
 
 type PopoverState = { alunoId: number; itemId: number } | null;

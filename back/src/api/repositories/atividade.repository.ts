@@ -90,20 +90,22 @@ class AtividadeRepository extends BaseRepository {
         }
       }
 
-      // Recalcular valor total de cada Nota
+      // Recalcular valor total de cada Nota (normalizado 0–10)
       const itens = await tx.atividadeItem.findMany({
         where: { atividadeId, ativo: true },
       });
       const pesoMap = new Map(itens.map((i) => [i.id, i.peso]));
+      const pesoTotal = itens.reduce((acc, i) => acc + i.peso, 0);
 
       for (const [alunoId, nota] of notaMap) {
         const notaItens = await tx.notaItem.findMany({
           where: { notaId: nota.id, ativo: true },
         });
-        const total = notaItens.reduce((acc, ni) => {
+        const soma = notaItens.reduce((acc, ni) => {
           const peso = pesoMap.get(ni.atividadeItemId) ?? 1;
           return acc + (ni.valor ?? 0) * peso;
         }, 0);
+        const total = pesoTotal > 0 ? (soma / pesoTotal) * 10 : 0;
         await tx.nota.update({ where: { id: nota.id }, data: { valor: total } });
       }
 
