@@ -148,6 +148,17 @@
   border-radius: 8px;
 }
 
+.itemClickable {
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    box-shadow: 0 2px 5px rgba(var(--color-shadow-rgb), 0.13);
+  }
+}
+
 .itemMain {
   flex: 1;
   font-size: 0.9rem;

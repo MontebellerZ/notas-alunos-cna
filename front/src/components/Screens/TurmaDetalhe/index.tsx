@@ -8,7 +8,6 @@ import {
   IoPersonAddOutline,
   IoSearchOutline,
   IoPencilOutline,
-  IoOpenOutline,
 } from "react-icons/io5";
 import TurmaService from "../../../services/turma.service";
 import AulaService from "../../../services/aula.service";
@@ -554,34 +553,32 @@ function TurmaDetalhe() {
           ) : (
             <ul className={styles.itemList}>
               {turma.atividades.map((atividade) => (
-                <li key={atividade.id} className={styles.item}>
+                <li
+                  key={atividade.id}
+                  className={`${styles.item} ${styles.itemClickable}`}
+                  onClick={() => navigate(`/main/atividades/${atividade.id}`)}
+                >
                   <span className={styles.itemMain}>{atividade.capitulo}</span>
                   {atividade.peso != null && (
                     <span className={styles.itemSub}>Peso: {atividade.peso}</span>
                   )}
                   <Button
                     variant="icon"
-                    title="Ver detalhes"
-                    onClick={() => navigate(`/main/atividades/${atividade.id}`)}
-                  >
-                    <IoOpenOutline />
-                  </Button>
-                  <Button
-                    variant="icon"
                     title="Editar atividade"
-                    onClick={() => abrirEditarAtividade(atividade)}
+                    onClick={(e) => { e.stopPropagation(); abrirEditarAtividade(atividade); }}
                   >
                     <IoPencilOutline />
                   </Button>
                   <Button
                     variant="icon-danger"
                     title="Remover atividade"
-                    onClick={() =>
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setModal({
                         tipo: "remover-atividade",
                         atividadeId: atividade.id,
-                      })
-                    }
+                      });
+                    }}
                   >
                     <IoTrashOutline />
                   </Button>
