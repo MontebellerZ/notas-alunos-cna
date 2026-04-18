@@ -438,15 +438,13 @@ function TurmaDetalhe() {
                   <span className={styles.itemSub}>{aula.horario}</span>
                   <Button
                     variant="icon"
-                    size="sm"
                     title="Editar aula"
                     onClick={() => abrirEditarAula(aula)}
                   >
                     <IoPencilOutline />
                   </Button>
                   <Button
-                    variant="danger"
-                    size="sm"
+                    variant="icon-danger"
                     title="Remover aula"
                     onClick={() => setModal({ tipo: "remover-aula", aulaId: aula.id })}
                   >

@@ -1,0 +1,202 @@
+.page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Cabeçalho ──────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.headerInfo {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subtitulo {
+  font-size: 0.92rem;
+  color: var(--color-text-secondary);
+}
+
+/* ── Seção ───────────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* ── Lista de turmas ─────────────────────────────────── */
+
+.turmasList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.turmaCard {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(var(--color-shadow-rgb), 0.05);
+}
+
+.turmaInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.turmaNome {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+}
+
+.turmaMeta {
+  font-size: 0.83rem;
+  color: var(--color-text-secondary);
+}
+
+/* ── Badge situação ──────────────────────────────────── */
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.badge-futura {
+  background: #e8f4fd;
+  color: #1565c0;
+}
+
+.badge-em-andamento {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge-encerrada {
+  background: #fce4ec;
+  color: #b71c1c;
+}
+
+/* ── Skeleton ────────────────────────────────────────── */
+
+.skeleton {
+  height: 2rem;
+  width: 40%;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--color-accent-mid-rgb), 0.1) 25%,
+    rgba(var(--color-accent-mid-rgb), 0.22) 50%,
+    rgba(var(--color-accent-mid-rgb), 0.1) 75%
+  );
+  background-size: 220% 100%;
+  animation: shimmer 1.25s ease-in-out infinite;
+}
+
+.skeletonCard {
+  height: 6rem;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--color-accent-mid-rgb), 0.1) 25%,
+    rgba(var(--color-accent-mid-rgb), 0.22) 50%,
+    rgba(var(--color-accent-mid-rgb), 0.1) 75%
+  );
+  background-size: 220% 100%;
+  animation: shimmer 1.25s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Vazio ───────────────────────────────────────────── */
+
+.empty {
+  color: var(--color-text-secondary);
+  padding: 1rem 0;
+}
+
+/* ── Form modal ──────────────────────────────────────── */
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  label {
+    font-weight: 600;
+    color: var(--color-text-label);
+    font-size: 0.92rem;
+  }
+
+  input {
+    border: 1.5px solid var(--color-border);
+    border-radius: 10px;
+    background-color: var(--color-surface);
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--color-text-primary);
+    outline: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0px 0px 0px 3px rgba(var(--color-accent-mid-rgb), 0.14);
+    }
+  }
+}

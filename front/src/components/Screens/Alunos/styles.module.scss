@@ -1,0 +1,186 @@
+.page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+/* ── Grid ──────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* ── Card ──────────────────────────────────────── */
+
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 4px 14px rgba(var(--color-shadow-rgb), 0.07);
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(var(--color-shadow-rgb), 0.13);
+  }
+}
+
+.cardBody {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cardAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  background: rgba(var(--color-accent-mid-rgb), 0.12);
+  color: var(--color-primary);
+  font-size: 1.3rem;
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.cardNome {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardIdade {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
+/* ── Skeleton ──────────────────────────────────── */
+
+.cardSkeleton {
+  pointer-events: none;
+  gap: 0.6rem;
+}
+
+.skeletonLine {
+  display: block;
+  height: 1rem;
+  width: 80%;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--color-accent-mid-rgb), 0.1) 25%,
+    rgba(var(--color-accent-mid-rgb), 0.22) 50%,
+    rgba(var(--color-accent-mid-rgb), 0.1) 75%
+  );
+  background-size: 220% 100%;
+  animation: shimmer 1.25s ease-in-out infinite;
+}
+
+.skeletonLineShort {
+  @extend .skeletonLine;
+  width: 50%;
+  height: 0.75rem;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Paginação ─────────────────────────────────── */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.paginationInfo {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ── Vazio ─────────────────────────────────────── */
+
+.empty {
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: 2rem 0;
+}
+
+/* ── Form modal ────────────────────────────────── */
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  label {
+    font-weight: 600;
+    color: var(--color-text-label);
+    font-size: 0.92rem;
+  }
+
+  input {
+    border: 1.5px solid var(--color-border);
+    border-radius: 10px;
+    background-color: var(--color-surface);
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--color-text-primary);
+    outline: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0px 0px 0px 3px rgba(var(--color-accent-mid-rgb), 0.14);
+    }
+  }
+}

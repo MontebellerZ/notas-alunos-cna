@@ -16,6 +16,19 @@ class AlunoRepository extends BaseRepository {
       take: 20,
     });
   }
+
+  async getByIdWithDetails(id: number) {
+    return await prisma.aluno.findUnique({
+      where: { id },
+      include: {
+        turmas: {
+          where: { ativo: true },
+          include: { turma: true },
+          orderBy: { turmaId: "asc" },
+        },
+      },
+    });
+  }
 }
 
 export default new AlunoRepository();

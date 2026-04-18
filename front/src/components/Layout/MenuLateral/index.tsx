@@ -10,7 +10,7 @@ type MenuLateralProps = {
 const menuItems = [
   { label: "Dashboard", to: "/main" },
   { label: "Turmas", to: "/main/turmas" },
-  { label: "Aulas", to: "/main/aulas" },
+  { label: "Alunos", to: "/main/alunos" },
 ];
 
 function MenuLateral({ isOpen, onClose }: MenuLateralProps) {

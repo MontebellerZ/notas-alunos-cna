@@ -4,6 +4,8 @@ import Home from "../components/Screens/Home";
 import Login from "../components/Screens/Login";
 import Turmas from "../components/Screens/Turmas";
 import TurmaDetalhe from "../components/Screens/TurmaDetalhe";
+import Alunos from "../components/Screens/Alunos";
+import AlunoDetalhe from "../components/Screens/AlunoDetalhe";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +27,14 @@ const router = createBrowserRouter([
       {
         path: "turmas/:id",
         element: <TurmaDetalhe />,
+      },
+      {
+        path: "alunos",
+        element: <Alunos />,
+      },
+      {
+        path: "alunos/:id",
+        element: <AlunoDetalhe />,
       },
     ],
   },
