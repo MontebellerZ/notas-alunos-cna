@@ -9,6 +9,17 @@ class AtividadeService extends BaseService {
   async getByIdWithDetails(id: number) {
     return await atividadeRepository.getByIdWithDetails(id);
   }
+
+  async getAvaliacaoData(id: number) {
+    return await atividadeRepository.getAvaliacaoData(id);
+  }
+
+  async salvarAvaliacao(
+    atividadeId: number,
+    entradas: { alunoId: number; atividadeItemId: number; valor: number }[]
+  ) {
+    return await atividadeRepository.salvarAvaliacao(atividadeId, entradas);
+  }
 }
 
 export default new AtividadeService();

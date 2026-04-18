@@ -31,6 +31,34 @@ atividadeRoutes.get("/:id/detalhes", async (req, res) => {
   res.send(result);
 });
 
+atividadeRoutes.get("/:id/avaliacao", async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isFinite(id)) {
+    throw new BadRequestError("Id da atividade inválido.");
+  }
+
+  const result = await atividadeService.getAvaliacaoData(id);
+  res.send(result);
+});
+
+atividadeRoutes.put("/:id/avaliacao", async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isFinite(id)) {
+    throw new BadRequestError("Id da atividade inválido.");
+  }
+
+  const { entradas } = req.body;
+
+  if (!Array.isArray(entradas)) {
+    throw new BadRequestError("Campo 'entradas' deve ser um array.");
+  }
+
+  await atividadeService.salvarAvaliacao(id, entradas);
+  res.send({ ok: true });
+});
+
 atividadeRoutes.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
 

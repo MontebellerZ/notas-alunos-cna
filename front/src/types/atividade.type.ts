@@ -14,3 +14,33 @@ export type TAtividadeDetalhe = TAtividade & {
   turma: { id: number; nome: string };
   atividadeItens: TAtividadeItem[];
 };
+
+export type TNotaItem = {
+  id: number;
+  valor: number | null;
+  notaId: number;
+  atividadeItemId: number;
+};
+
+export type TNotaAvaliacao = {
+  id: number;
+  alunoId: number;
+  atividadeId: number;
+  valor: number | null;
+  notaItens: TNotaItem[];
+};
+
+export type TAlunoAvaliacao = {
+  id: number;
+  nome: string;
+};
+
+export type TAvaliacaoData = TAtividade & {
+  turma: {
+    id: number;
+    nome: string;
+    alunos: { aluno: TAlunoAvaliacao }[];
+  };
+  atividadeItens: TAtividadeItem[];
+  notas: TNotaAvaliacao[];
+};

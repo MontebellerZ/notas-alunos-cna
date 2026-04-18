@@ -8,6 +8,7 @@ import {
   IoPersonAddOutline,
   IoSearchOutline,
   IoPencilOutline,
+  IoCheckmarkDoneOutline,
 } from "react-icons/io5";
 import TurmaService from "../../../services/turma.service";
 import AulaService from "../../../services/aula.service";
@@ -562,6 +563,13 @@ function TurmaDetalhe() {
                   {atividade.peso != null && (
                     <span className={styles.itemSub}>Peso: {atividade.peso}</span>
                   )}
+                  <Button
+                    variant="icon"
+                    title="Avaliar alunos"
+                    onClick={(e) => { e.stopPropagation(); navigate(`/main/atividades/${atividade.id}/avaliacao`); }}
+                  >
+                    <IoCheckmarkDoneOutline />
+                  </Button>
                   <Button
                     variant="icon"
                     title="Editar atividade"

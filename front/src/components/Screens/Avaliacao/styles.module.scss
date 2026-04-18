@@ -1,0 +1,299 @@
+/* ── Página ──────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  min-height: 100%;
+}
+
+.loading {
+  color: var(--color-text-secondary, #888);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* ── Header ──────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary, #666);
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--color-border);
+    color: var(--color-text-primary, #222);
+  }
+}
+
+.headerInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.titulo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #222);
+  margin: 0;
+}
+
+.subtitulo {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary, #888);
+}
+
+/* ── Tabela ──────────────────────────────────────────── */
+
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(var(--color-shadow-rgb), 0.06);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface, #fff);
+}
+
+.th {
+  padding: 0.6rem 0.75rem;
+  background: var(--color-bg, #f5f5f5);
+  border-bottom: 2px solid var(--color-border);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-text-secondary, #666);
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.thAluno {
+  text-align: left;
+  min-width: 180px;
+}
+
+.thTotal {
+  min-width: 70px;
+}
+
+.itemNome {
+  display: block;
+  color: var(--color-text-primary, #222);
+  font-size: 0.82rem;
+}
+
+.itemPeso {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--color-text-secondary, #aaa);
+  font-weight: 400;
+}
+
+.tr {
+  &:nth-child(even) {
+    background: rgba(var(--color-shadow-rgb), 0.02);
+  }
+
+  &:hover {
+    background: rgba(var(--color-primary-rgb, 0, 100, 200), 0.04);
+  }
+}
+
+.td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.tdAluno {
+  text-align: left;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #222);
+  white-space: nowrap;
+}
+
+.tdTotal {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* ── Célula de avaliação ─────────────────────────────── */
+
+.cellWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cellBtn {
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: var(--color-primary);
+    background: rgba(var(--color-primary-rgb, 0, 100, 200), 0.06);
+  }
+}
+
+.cell-certo {
+  border-color: #38a169;
+  background: rgba(56, 161, 105, 0.08);
+}
+
+.cell-meio {
+  border-color: #d69e2e;
+  background: rgba(214, 158, 46, 0.08);
+}
+
+.cell-errado {
+  border-color: #e53e3e;
+  background: rgba(229, 62, 62, 0.08);
+}
+
+.cellIcon {
+  font-size: 1.15rem;
+}
+
+.certo {
+  color: #38a169;
+}
+
+.meio {
+  color: #d69e2e;
+}
+
+.errado {
+  color: #e53e3e;
+}
+
+.cellVazio {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #bbb);
+}
+
+/* ── Popover ─────────────────────────────────────────── */
+
+.popover {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 0.35rem 0.5rem;
+  box-shadow: 0 4px 16px rgba(var(--color-shadow-rgb), 0.14);
+  z-index: 100;
+  white-space: nowrap;
+}
+
+.popBtn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  transition: background 0.12s;
+}
+
+.popCerto {
+  color: #38a169;
+
+  &:hover {
+    background: rgba(56, 161, 105, 0.12);
+  }
+}
+
+.popMeio {
+  color: #d69e2e;
+
+  &:hover {
+    background: rgba(214, 158, 46, 0.12);
+  }
+}
+
+.popErrado {
+  color: #e53e3e;
+
+  &:hover {
+    background: rgba(229, 62, 62, 0.12);
+  }
+}
+
+/* ── Confirm sair ────────────────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.confirmBox {
+  background: var(--color-surface, #fff);
+  border-radius: 14px;
+  padding: 1.5rem;
+  max-width: 380px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.confirmText {
+  font-size: 0.95rem;
+  color: var(--color-text-primary, #222);
+  margin: 0;
+}
+
+.confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
