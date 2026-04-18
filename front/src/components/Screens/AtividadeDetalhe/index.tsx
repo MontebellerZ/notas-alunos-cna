@@ -86,8 +86,10 @@ function AtividadeDetalhe() {
         setIsLoading(false);
       });
 
-    return () => { cancelled = true; };
-  }, [atividadeId]);
+    return () => {
+      cancelled = true;
+    };
+  }, [atividadeId, navigate]);
 
   const fecharModal = () => {
     if (isSaving) return;
@@ -151,7 +153,7 @@ function AtividadeDetalhe() {
       .then((novoItem) => {
         toast.success("Item adicionado!");
         setAtividade((prev) =>
-          prev ? { ...prev, atividadeItens: [...prev.atividadeItens, novoItem] } : prev
+          prev ? { ...prev, atividadeItens: [...prev.atividadeItens, novoItem] } : prev,
         );
         fecharModal();
       })
@@ -182,10 +184,10 @@ function AtividadeDetalhe() {
             ? {
                 ...prev,
                 atividadeItens: prev.atividadeItens.map((i) =>
-                  i.id === atualizado.id ? atualizado : i
+                  i.id === atualizado.id ? atualizado : i,
                 ),
               }
-            : prev
+            : prev,
         );
         fecharModal();
       })
@@ -202,7 +204,7 @@ function AtividadeDetalhe() {
         setAtividade((prev) =>
           prev
             ? { ...prev, atividadeItens: prev.atividadeItens.filter((i) => i.id !== modal.itemId) }
-            : prev
+            : prev,
         );
         fecharModal();
       })
@@ -231,13 +233,13 @@ function AtividadeDetalhe() {
       return;
     }
     setIsSaving(true);
-    AtividadeItemService.createBulk(
-      nomesLotePreview.map((nome) => ({ nome, peso, atividadeId }))
-    )
+    AtividadeItemService.createBulk(nomesLotePreview.map((nome) => ({ nome, peso, atividadeId })))
       .then((criados) => {
-        toast.success(`${criados.length} ${criados.length === 1 ? "item criado" : "itens criados"}!`);
+        toast.success(
+          `${criados.length} ${criados.length === 1 ? "item criado" : "itens criados"}!`,
+        );
         setAtividade((prev) =>
-          prev ? { ...prev, atividadeItens: [...prev.atividadeItens, ...criados] } : prev
+          prev ? { ...prev, atividadeItens: [...prev.atividadeItens, ...criados] } : prev,
         );
         fecharModal();
       })
@@ -281,9 +283,7 @@ function AtividadeDetalhe() {
           <h2 className={styles.title}>{atividade.capitulo}</h2>
           <span className={styles.subtitulo}>{atividade.turma.nome}</span>
         </div>
-        {atividade.peso != null && (
-          <span className={styles.pesoTag}>Peso: {atividade.peso}</span>
-        )}
+        {atividade.peso != null && <span className={styles.pesoTag}>Peso: {atividade.peso}</span>}
       </div>
 
       {/* ── Itens de avaliação ──────────────────────────────── */}
@@ -311,11 +311,7 @@ function AtividadeDetalhe() {
               <li key={item.id} className={styles.item}>
                 <span className={styles.itemNome}>{item.nome}</span>
                 <span className={styles.itemPeso}>Peso: {item.peso}</span>
-                <Button
-                  variant="icon"
-                  title="Editar item"
-                  onClick={() => abrirEditarItem(item)}
-                >
+                <Button variant="icon" title="Editar item" onClick={() => abrirEditarItem(item)}>
                   <IoPencilOutline />
                 </Button>
                 <Button
@@ -349,7 +345,9 @@ function AtividadeDetalhe() {
         }
       >
         <div className={styles.form}>
-          <label className={styles.label} htmlFor="item-nome">Nome *</label>
+          <label className={styles.label} htmlFor="item-nome">
+            Nome *
+          </label>
           <input
             id="item-nome"
             className={styles.input}
@@ -360,7 +358,9 @@ function AtividadeDetalhe() {
             disabled={isSaving}
             autoFocus
           />
-          <label className={styles.label} htmlFor="item-peso">Peso</label>
+          <label className={styles.label} htmlFor="item-peso">
+            Peso
+          </label>
           <input
             id="item-peso"
             className={styles.input}
@@ -393,7 +393,9 @@ function AtividadeDetalhe() {
         }
       >
         <div className={styles.form}>
-          <label className={styles.label} htmlFor="item-edit-nome">Nome *</label>
+          <label className={styles.label} htmlFor="item-edit-nome">
+            Nome *
+          </label>
           <input
             id="item-edit-nome"
             className={styles.input}
@@ -404,7 +406,9 @@ function AtividadeDetalhe() {
             disabled={isSaving}
             autoFocus
           />
-          <label className={styles.label} htmlFor="item-edit-peso">Peso</label>
+          <label className={styles.label} htmlFor="item-edit-peso">
+            Peso
+          </label>
           <input
             id="item-edit-peso"
             className={styles.input}
@@ -451,7 +455,9 @@ function AtividadeDetalhe() {
               Cancelar
             </Button>
             <Button variant="primary" onClick={handleCriarLote} disabled={isSaving || !loteValido}>
-              {isSaving ? "Criando..." : `Criar ${nomesLotePreview.length > 0 ? `(${nomesLotePreview.length})` : ""}`}
+              {isSaving
+                ? "Criando..."
+                : `Criar ${nomesLotePreview.length > 0 ? `(${nomesLotePreview.length})` : ""}`}
             </Button>
           </>
         }
@@ -470,7 +476,7 @@ function AtividadeDetalhe() {
 
         <div className={styles.intervalosSection}>
           <label className={styles.label}>Intervalos</label>
-          {loteForm.intervalos.map((iv, idx) => {
+          {loteForm.intervalos.map((iv) => {
             const nomes = gerarNomesIntervalo(iv.inicio, iv.fim);
             const invalido = (iv.inicio.trim() || iv.fim.trim()) && nomes === null;
             return (
@@ -518,10 +524,14 @@ function AtividadeDetalhe() {
 
         {nomesLotePreview.length > 0 && (
           <div className={styles.preview}>
-            <label className={styles.label}>Pré-visualização ({nomesLotePreview.length} itens)</label>
+            <label className={styles.label}>
+              Pré-visualização ({nomesLotePreview.length} itens)
+            </label>
             <div className={styles.previewChips}>
               {nomesLotePreview.map((nome) => (
-                <span key={nome} className={styles.previewChip}>{nome}</span>
+                <span key={nome} className={styles.previewChip}>
+                  {nome}
+                </span>
               ))}
             </div>
           </div>
