@@ -1,4 +1,3 @@
-import prisma from "../../../prisma";
 import Consts from "../../config/consts";
 
 interface PrismaDelegate {
@@ -26,7 +25,7 @@ class BaseRepository {
     const skip = (page - 1) * limit;
     const where = { ativo: true };
 
-    const [items, total] = await prisma.$transaction([
+    const [items, total] = await Promise.all([
       this.delegate.findMany({ where, orderBy: { id: "desc" }, skip, take: limit }),
       this.delegate.count({ where }),
     ]);
