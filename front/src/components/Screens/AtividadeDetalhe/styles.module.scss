@@ -88,6 +88,12 @@
   gap: 0.75rem;
 }
 
+.sectionActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .sectionTitle {
   display: flex;
   align-items: center;
@@ -169,4 +175,118 @@
   &:focus {
     border-color: var(--color-primary);
   }
+}
+
+.inputError {
+  border-color: var(--color-danger, #e53e3e) !important;
+}
+
+/* ── Modal lote ─────────────────────────────────────── */
+
+.intervalosSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.intervaloRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.intervaloInputs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1;
+
+  .input {
+    flex: 1;
+  }
+}
+
+.intervaloSep {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #888);
+  white-space: nowrap;
+}
+
+.removerIntervaloBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-danger, #e53e3e);
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 1rem;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(var(--color-danger-rgb, 229, 62, 62), 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+.addIntervaloBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: transparent;
+  border: 1.5px dashed var(--color-primary);
+  border-radius: 8px;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  width: fit-content;
+  margin-top: 0.25rem;
+
+  &:hover {
+    background: rgba(var(--color-primary-rgb, 0, 100, 200), 0.06);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  background: var(--color-surface, #f8f8f8);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.previewChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.previewChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
 }

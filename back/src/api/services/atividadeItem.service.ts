@@ -5,6 +5,10 @@ class AtividadeItemService extends BaseService {
   constructor() {
     super(atividadeItemRepository, "AtividadeItem");
   }
+
+  async createMany(data: { nome: string; peso: number; atividadeId: number }[]) {
+    return await atividadeItemRepository.createMany(data);
+  }
 }
 
 export default new AtividadeItemService();

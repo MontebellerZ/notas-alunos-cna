@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import {
@@ -7,6 +7,7 @@ import {
   IoTrashOutline,
   IoPencilOutline,
   IoListOutline,
+  IoLayersOutline,
 } from "react-icons/io5";
 import AtividadeService from "../../../services/atividade.service";
 import AtividadeItemService from "../../../services/atividadeItem.service";
@@ -20,7 +21,31 @@ type ModalState =
   | { tipo: "fechado" }
   | { tipo: "novo-item" }
   | { tipo: "editar-item"; item: TAtividadeItem }
-  | { tipo: "remover-item"; itemId: number };
+  | { tipo: "remover-item"; itemId: number }
+  | { tipo: "lote" };
+
+type Intervalo = { id: number; inicio: string; fim: string };
+
+function gerarNomesIntervalo(inicio: string, fim: string): string[] | null {
+  const trimI = inicio.trim();
+  const trimF = fim.trim();
+  if (!trimI || !trimF) return null;
+
+  const partsI = trimI.split(".");
+  const partsF = trimF.split(".");
+  if (partsI.length !== partsF.length) return null;
+
+  const prefixI = partsI.slice(0, -1).join(".");
+  const prefixF = partsF.slice(0, -1).join(".");
+  if (prefixI !== prefixF) return null;
+
+  const numI = parseInt(partsI[partsI.length - 1], 10);
+  const numF = parseInt(partsF[partsF.length - 1], 10);
+  if (isNaN(numI) || isNaN(numF) || numF < numI) return null;
+
+  const prefix = partsI.length > 1 ? prefixI + "." : "";
+  return Array.from({ length: numF - numI + 1 }, (_, k) => `${prefix}${numI + k}`);
+}
 
 function AtividadeDetalhe() {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +59,12 @@ function AtividadeDetalhe() {
 
   const [itemForm, setItemForm] = useState({ nome: "", peso: "" });
   const [itemEditForm, setItemEditForm] = useState({ nome: "", peso: "" });
+
+  const [loteForm, setLoteForm] = useState<{ peso: string; intervalos: Intervalo[] }>({
+    peso: "",
+    intervalos: [{ id: 1, inicio: "", fim: "" }],
+  });
+  const loteIntervalIdRef = useRef(1);
 
   useEffect(() => {
     if (!Number.isFinite(atividadeId)) {
@@ -66,6 +97,34 @@ function AtividadeDetalhe() {
   const abrirNovoItem = () => {
     setItemForm({ nome: "", peso: "" });
     setModal({ tipo: "novo-item" });
+  };
+
+  const abrirLote = () => {
+    loteIntervalIdRef.current = 1;
+    setLoteForm({ peso: "", intervalos: [{ id: 1, inicio: "", fim: "" }] });
+    setModal({ tipo: "lote" });
+  };
+
+  const adicionarIntervalo = () => {
+    loteIntervalIdRef.current += 1;
+    setLoteForm((f) => ({
+      ...f,
+      intervalos: [...f.intervalos, { id: loteIntervalIdRef.current, inicio: "", fim: "" }],
+    }));
+  };
+
+  const removerIntervalo = (id: number) => {
+    setLoteForm((f) => ({
+      ...f,
+      intervalos: f.intervalos.filter((i) => i.id !== id),
+    }));
+  };
+
+  const atualizarIntervalo = (id: number, campo: "inicio" | "fim", valor: string) => {
+    setLoteForm((f) => ({
+      ...f,
+      intervalos: f.intervalos.map((i) => (i.id === id ? { ...i, [campo]: valor } : i)),
+    }));
   };
 
   const abrirEditarItem = (item: TAtividadeItem) => {
@@ -151,6 +210,41 @@ function AtividadeDetalhe() {
       .finally(() => setIsSaving(false));
   };
 
+  const nomesLotePreview: string[] = loteForm.intervalos.flatMap((iv) => {
+    const nomes = gerarNomesIntervalo(iv.inicio, iv.fim);
+    return nomes ?? [];
+  });
+
+  const loteValido =
+    loteForm.intervalos.length > 0 &&
+    loteForm.intervalos.every((iv) => gerarNomesIntervalo(iv.inicio, iv.fim) !== null) &&
+    nomesLotePreview.length > 0;
+
+  const handleCriarLote = () => {
+    if (!loteValido) {
+      toast.warn("Verifique os intervalos informados.");
+      return;
+    }
+    const peso = loteForm.peso ? Number(loteForm.peso) : 1;
+    if (!Number.isFinite(peso) || peso <= 0) {
+      toast.warn("Peso inválido.");
+      return;
+    }
+    setIsSaving(true);
+    AtividadeItemService.createBulk(
+      nomesLotePreview.map((nome) => ({ nome, peso, atividadeId }))
+    )
+      .then((criados) => {
+        toast.success(`${criados.length} ${criados.length === 1 ? "item criado" : "itens criados"}!`);
+        setAtividade((prev) =>
+          prev ? { ...prev, atividadeItens: [...prev.atividadeItens, ...criados] } : prev
+        );
+        fecharModal();
+      })
+      .catch((err) => toast.error(String(err?.message ?? err)))
+      .finally(() => setIsSaving(false));
+  };
+
   if (isLoading) {
     return (
       <div className={styles.page}>
@@ -199,9 +293,14 @@ function AtividadeDetalhe() {
             <IoListOutline />
             Itens de avaliação
           </h3>
-          <Button variant="primary" size="sm" onClick={abrirNovoItem}>
-            <IoAddOutline /> Novo item
-          </Button>
+          <div className={styles.sectionActions}>
+            <Button variant="secondary" size="sm" onClick={abrirLote}>
+              <IoLayersOutline /> Criar em lote
+            </Button>
+            <Button variant="primary" size="sm" onClick={abrirNovoItem}>
+              <IoAddOutline /> Novo item
+            </Button>
+          </div>
         </div>
 
         {atividade.atividadeItens.length === 0 ? (
@@ -338,6 +437,95 @@ function AtividadeDetalhe() {
         }
       >
         <p>Tem certeza que deseja remover este item?</p>
+      </Modal>
+
+      {/* ── Modal: Criar em lote ─────────────────────────────── */}
+      <Modal
+        isOpen={modal.tipo === "lote"}
+        onRequestClose={fecharModal}
+        title="Criar itens em lote"
+        width="md"
+        actions={
+          <>
+            <Button variant="secondary" onClick={fecharModal} disabled={isSaving}>
+              Cancelar
+            </Button>
+            <Button variant="primary" onClick={handleCriarLote} disabled={isSaving || !loteValido}>
+              {isSaving ? "Criando..." : `Criar ${nomesLotePreview.length > 0 ? `(${nomesLotePreview.length})` : ""}`}
+            </Button>
+          </>
+        }
+      >
+        <div className={styles.form}>
+          <label className={styles.label}>Peso padrão</label>
+          <input
+            className={styles.input}
+            type="number"
+            placeholder="1"
+            value={loteForm.peso}
+            onChange={(e) => setLoteForm((f) => ({ ...f, peso: e.target.value }))}
+            disabled={isSaving}
+          />
+        </div>
+
+        <div className={styles.intervalosSection}>
+          <label className={styles.label}>Intervalos</label>
+          {loteForm.intervalos.map((iv, idx) => {
+            const nomes = gerarNomesIntervalo(iv.inicio, iv.fim);
+            const invalido = (iv.inicio.trim() || iv.fim.trim()) && nomes === null;
+            return (
+              <div key={iv.id} className={styles.intervaloRow}>
+                <div className={styles.intervaloInputs}>
+                  <input
+                    className={`${styles.input} ${invalido ? styles.inputError : ""}`}
+                    placeholder="De (ex: 1.1)"
+                    value={iv.inicio}
+                    onChange={(e) => atualizarIntervalo(iv.id, "inicio", e.target.value)}
+                    disabled={isSaving}
+                  />
+                  <span className={styles.intervaloSep}>até</span>
+                  <input
+                    className={`${styles.input} ${invalido ? styles.inputError : ""}`}
+                    placeholder="Até (ex: 1.4)"
+                    value={iv.fim}
+                    onChange={(e) => atualizarIntervalo(iv.id, "fim", e.target.value)}
+                    disabled={isSaving}
+                  />
+                </div>
+                {loteForm.intervalos.length > 1 && (
+                  <button
+                    className={styles.removerIntervaloBtn}
+                    onClick={() => removerIntervalo(iv.id)}
+                    disabled={isSaving}
+                    type="button"
+                    title="Remover intervalo"
+                  >
+                    <IoTrashOutline />
+                  </button>
+                )}
+              </div>
+            );
+          })}
+          <button
+            className={styles.addIntervaloBtn}
+            onClick={adicionarIntervalo}
+            disabled={isSaving}
+            type="button"
+          >
+            <IoAddOutline /> Adicionar intervalo
+          </button>
+        </div>
+
+        {nomesLotePreview.length > 0 && (
+          <div className={styles.preview}>
+            <label className={styles.label}>Pré-visualização ({nomesLotePreview.length} itens)</label>
+            <div className={styles.previewChips}>
+              {nomesLotePreview.map((nome) => (
+                <span key={nome} className={styles.previewChip}>{nome}</span>
+              ))}
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

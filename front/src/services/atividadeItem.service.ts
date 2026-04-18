@@ -6,6 +6,10 @@ class AtividadeItemService extends BaseService {
     return await this.post<TAtividadeItem>("/atividade-item", data);
   }
 
+  static async createBulk(itens: TAtividadeItemCreate[]): Promise<TAtividadeItem[]> {
+    return await this.post<TAtividadeItem[]>("/atividade-item/lote", { itens });
+  }
+
   static async update(id: number, data: Pick<TAtividadeItemCreate, "nome" | "peso">): Promise<TAtividadeItem> {
     return await this.put<TAtividadeItem>(`/atividade-item/${id}`, data);
   }
