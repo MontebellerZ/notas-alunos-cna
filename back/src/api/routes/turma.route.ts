@@ -15,6 +15,11 @@ turmaRoutes.get("/", async (req, res) => {
   res.send(result);
 });
 
+turmaRoutes.post("/", async (req, res) => {
+  const result = await turmaService.create(req.body);
+  res.status(201).send(result);
+});
+
 turmaRoutes.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
 

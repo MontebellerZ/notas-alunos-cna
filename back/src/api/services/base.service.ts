@@ -35,6 +35,10 @@ class BaseService {
     return item;
   }
 
+  async create(data: any) {
+    return await this.repo.create(data);
+  }
+
   async update(data: any) {
     if (!data.id) throw new BadRequestError("Id não informado");
 

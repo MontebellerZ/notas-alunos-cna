@@ -3,6 +3,7 @@ import Consts from "../../config/consts";
 interface PrismaDelegate {
   findMany: (args?: any) => Promise<any[]>;
   findUnique: (args: any) => Promise<any | null>;
+  create: (args: any) => Promise<any>;
   update: (args: any) => Promise<any>;
   count: (args?: any) => Promise<number>;
 }
@@ -35,6 +36,10 @@ class BaseRepository {
 
   async getById(id: number) {
     return await this.delegate.findUnique({ where: { id } });
+  }
+
+  async create(data: any) {
+    return await this.delegate.create({ data });
   }
 
   async updateById(id: number, data: any) {
