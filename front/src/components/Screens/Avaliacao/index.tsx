@@ -172,11 +172,11 @@ function Avaliacao() {
     <div className={styles.page}>
       {/* Header */}
       <div className={styles.header}>
-        <button className={styles.backBtn} onClick={handleVoltar} title="Voltar">
+        <Button variant="icon" onClick={handleVoltar} title="Voltar">
           <IoArrowBackOutline />
-        </button>
+        </Button>
         <div className={styles.headerInfo}>
-          <h1 className={styles.titulo}>{data.capitulo}</h1>
+          <h2 className={styles.title}>{data.capitulo}</h2>
           <span className={styles.subtitulo}>{data.turma.nome}</span>
         </div>
         <Button

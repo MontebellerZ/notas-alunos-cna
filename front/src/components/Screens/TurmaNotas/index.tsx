@@ -46,7 +46,6 @@ export default function TurmaNotas() {
       return;
     }
     let cancelled = false;
-    setIsLoading(true);
     TurmaService.getTurmaNotas(turmaId)
       .then((res) => {
         if (cancelled) return;
@@ -104,7 +103,7 @@ export default function TurmaNotas() {
           <IoArrowBackOutline />
         </Button>
         <div className={styles.headerInfo}>
-          <h2 className={styles.titulo}>{data.nome}</h2>
+          <h2 className={styles.title}>{data.nome}</h2>
           <span className={styles.subtitulo}>Acompanhamento de notas</span>
         </div>
       </div>
