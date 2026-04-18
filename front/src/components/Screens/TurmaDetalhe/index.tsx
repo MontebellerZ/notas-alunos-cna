@@ -15,6 +15,7 @@ import AlunoService from "../../../services/aluno.service";
 import AtividadeService from "../../../services/atividade.service";
 import type { TTurmaDetalhe, TTurmaCreate } from "../../../types/turma.type";
 import type { TAluno } from "../../../types/aluno.type";
+import type { TAtividade } from "../../../types/atividade.type";
 import Button from "../../Shared/Button";
 import Modal from "../../Shared/Modal";
 import styles from "./styles.module.scss";
@@ -37,6 +38,7 @@ type ModalState =
   | { tipo: "editar-aula"; aulaId: string }
   | { tipo: "vincular-aluno" }
   | { tipo: "nova-atividade" }
+  | { tipo: "editar-atividade"; atividade: TAtividade }
   | { tipo: "remover-aula"; aulaId: string }
   | { tipo: "remover-aluno"; alunoId: number; nome: string }
   | { tipo: "remover-atividade"; atividadeId: number };
@@ -83,6 +85,9 @@ function TurmaDetalhe() {
 
   // Formulário: nova atividade
   const [atividadeForm, setAtividadeForm] = useState({ capitulo: "", peso: "" });
+
+  // Formulário: editar atividade
+  const [atividadeEditForm, setAtividadeEditForm] = useState({ capitulo: "", peso: "" });
 
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -332,6 +337,39 @@ function TurmaDetalhe() {
       .finally(() => setIsSaving(false));
   };
 
+  const abrirEditarAtividade = (atividade: TAtividade) => {
+    setAtividadeEditForm({
+      capitulo: atividade.capitulo,
+      peso: atividade.peso != null ? String(atividade.peso) : "",
+    });
+    setModal({ tipo: "editar-atividade", atividade });
+  };
+
+  const handleSalvarEdicaoAtividade = () => {
+    if (modal.tipo !== "editar-atividade") return;
+    if (!atividadeEditForm.capitulo.trim()) {
+      toast.warn("O capítulo é obrigatório.");
+      return;
+    }
+    const peso = atividadeEditForm.peso ? Number(atividadeEditForm.peso) : undefined;
+    if (atividadeEditForm.peso && !Number.isFinite(peso)) {
+      toast.warn("Peso inválido.");
+      return;
+    }
+    setIsSaving(true);
+    AtividadeService.update(modal.atividade.id, {
+      capitulo: atividadeEditForm.capitulo.trim(),
+      peso: peso ?? null,
+    })
+      .then(() => {
+        toast.success("Atividade atualizada!");
+        fecharModal();
+        recarregar();
+      })
+      .catch((err) => toast.error(String(err?.message ?? err)))
+      .finally(() => setIsSaving(false));
+  };
+
   const handleRemoverAtividade = () => {
     if (modal.tipo !== "remover-atividade") return;
     setIsSaving(true);
@@ -521,8 +559,14 @@ function TurmaDetalhe() {
                     <span className={styles.itemSub}>Peso: {atividade.peso}</span>
                   )}
                   <Button
-                    variant="danger"
-                    size="sm"
+                    variant="icon"
+                    title="Editar atividade"
+                    onClick={() => abrirEditarAtividade(atividade)}
+                  >
+                    <IoPencilOutline />
+                  </Button>
+                  <Button
+                    variant="icon-danger"
                     title="Remover atividade"
                     onClick={() =>
                       setModal({
@@ -770,6 +814,50 @@ function TurmaDetalhe() {
             step={0.1}
             value={atividadeForm.peso}
             onChange={(e) => setAtividadeForm((f) => ({ ...f, peso: e.target.value }))}
+            disabled={isSaving}
+          />
+        </div>
+      </Modal>
+
+      {/* ── Modal: Editar atividade ───────────────────────── */}
+      <Modal
+        isOpen={modal.tipo === "editar-atividade"}
+        onRequestClose={fecharModal}
+        title="Editar atividade"
+        width="sm"
+        actions={
+          <>
+            <Button variant="secondary" onClick={fecharModal} disabled={isSaving}>
+              Cancelar
+            </Button>
+            <Button variant="primary" onClick={handleSalvarEdicaoAtividade} disabled={isSaving}>
+              {isSaving ? "Salvando..." : "Salvar"}
+            </Button>
+          </>
+        }
+      >
+        <div className={styles.form}>
+          <label className={styles.label} htmlFor="atividade-edit-capitulo">Capítulo *</label>
+          <input
+            id="atividade-edit-capitulo"
+            className={styles.input}
+            type="text"
+            placeholder="Ex: Chapter 3"
+            value={atividadeEditForm.capitulo}
+            onChange={(e) => setAtividadeEditForm((f) => ({ ...f, capitulo: e.target.value }))}
+            disabled={isSaving}
+          />
+
+          <label className={styles.label} htmlFor="atividade-edit-peso">Peso</label>
+          <input
+            id="atividade-edit-peso"
+            className={styles.input}
+            type="number"
+            placeholder="Ex: 2"
+            min={0}
+            step={0.1}
+            value={atividadeEditForm.peso}
+            onChange={(e) => setAtividadeEditForm((f) => ({ ...f, peso: e.target.value }))}
             disabled={isSaving}
           />
         </div>
