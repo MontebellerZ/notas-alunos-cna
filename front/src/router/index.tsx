@@ -6,6 +6,7 @@ import Turmas from "../components/Screens/Turmas";
 import TurmaDetalhe from "../components/Screens/TurmaDetalhe";
 import Alunos from "../components/Screens/Alunos";
 import AlunoDetalhe from "../components/Screens/AlunoDetalhe";
+import Agenda from "../components/Screens/Agenda";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "agenda",
+        element: <Agenda />,
       },
       {
         path: "turmas",

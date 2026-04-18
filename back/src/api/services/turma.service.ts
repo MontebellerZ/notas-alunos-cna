@@ -39,6 +39,10 @@ class TurmaService extends BaseService {
   async desvincularAluno(turmaId: number, alunoId: number) {
     return await turmaRepository.desvincularAluno(turmaId, alunoId);
   }
+
+  async getAgenda() {
+    return await turmaRepository.getAgenda();
+  }
 }
 
 export default new TurmaService();

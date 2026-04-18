@@ -1,0 +1,277 @@
+.page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Cabeçalho ───────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.headerIcon {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.resumo {
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  background: rgba(var(--color-accent-mid-rgb), 0.1);
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* ── Grid de dias ────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.6rem;
+  align-items: start;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 700px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Coluna por dia ──────────────────────────────────── */
+
+.coluna {
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  border: 1.5px solid var(--color-border);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 8px rgba(var(--color-shadow-rgb), 0.05);
+  transition: box-shadow 0.18s ease;
+}
+
+.colunaHoje {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 18px rgba(var(--color-accent-mid-rgb), 0.18);
+}
+
+.colunaVazia {
+  opacity: 0.55;
+}
+
+/* ── Header da coluna ────────────────────────────────── */
+
+.colunaHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.65rem 0.5rem 0.5rem;
+  background: rgba(var(--color-accent-mid-rgb), 0.06);
+  border-bottom: 1.5px solid var(--color-border);
+  position: relative;
+}
+
+.colunaHeaderHoje {
+  background: var(--color-primary);
+
+  .diaNome,
+  .diaAbrev,
+  .contagem {
+    color: #fff;
+  }
+}
+
+.diaNome {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: block;
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+}
+
+.diaAbrev {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: none;
+
+  @media (max-width: 900px) {
+    display: block;
+  }
+}
+
+.hojeTag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  border-radius: 20px;
+  padding: 0.1rem 0.45rem;
+}
+
+.contagem {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* ── Body da coluna ──────────────────────────────────── */
+
+.colunaBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.6rem 0.5rem;
+  min-height: 60px;
+}
+
+.semAulas {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: 0.5rem 0;
+  margin: 0;
+}
+
+/* ── Card de aula ────────────────────────────────────── */
+
+.card {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+  font-family: inherit;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(var(--color-shadow-rgb), 0.12);
+    border-color: var(--color-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.cardHoje {
+  border-color: rgba(var(--color-accent-mid-rgb), 0.4);
+  background: rgba(var(--color-accent-mid-rgb), 0.04);
+}
+
+.cardHorario {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.cardTurma {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.cardNome {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardSala {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+/* ── Badge situação ──────────────────────────────────── */
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.badge-futura {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+}
+
+.badge-em-andamento {
+  background: rgba(16, 185, 129, 0.12);
+  color: #065f46;
+}
+
+.badge-encerrada {
+  background: rgba(var(--color-accent-mid-rgb), 0.1);
+  color: var(--color-primary-dark);
+}
+
+/* ── Skeleton ────────────────────────────────────────── */
+
+.skeletonDia {
+  display: block;
+  height: 0.8rem;
+  width: 60%;
+  border-radius: 6px;
+  background: rgba(var(--color-accent-mid-rgb), 0.15);
+}
+
+.cardSkeleton {
+  height: 72px;
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--color-accent-mid-rgb), 0.08) 25%,
+    rgba(var(--color-accent-mid-rgb), 0.18) 50%,
+    rgba(var(--color-accent-mid-rgb), 0.08) 75%
+  );
+  background-size: 220% 100%;
+  animation: shimmer 1.25s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

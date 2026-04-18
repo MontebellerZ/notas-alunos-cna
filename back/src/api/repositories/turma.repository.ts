@@ -104,6 +104,24 @@ class TurmaRepository extends BaseRepository {
       data: { ativo: false },
     });
   }
+
+  async getAgenda() {
+    const turmas = await prisma.turma.findMany({
+      where: { ativo: true },
+      orderBy: { nome: "asc" },
+      select: { id: true, nome: true, sala: true, situacao: true, aulasJson: true },
+    });
+
+    return turmas
+      .map((t) => ({
+        turmaId: t.id,
+        nome: t.nome,
+        sala: t.sala,
+        situacao: t.situacao,
+        aulas: parseAulas(t.aulasJson),
+      }))
+      .filter((t) => t.aulas.length > 0);
+  }
 }
 
 export default new TurmaRepository();

@@ -19,3 +19,12 @@ export type TTurmaDetalhe = TTurma & {
   alunos: Array<{ turmaId: number; alunoId: number; ativo: boolean; aluno: TAluno }>;
   atividades: TAtividade[];
 };
+
+export type TAgendaTurma = {
+  turmaId: number;
+  nome: string;
+  sala?: string | null;
+  situacao?: string | null;
+  aulas: TAula[];
+};
+

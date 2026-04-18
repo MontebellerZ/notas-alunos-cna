@@ -30,6 +30,10 @@ class TurmaService extends BaseService {
   static async desvincularAluno(turmaId: number, alunoId: number): Promise<void> {
     return await this.delete<void>(`/turma/${turmaId}/aluno/${alunoId}`);
   }
+
+  static async getAgenda(): Promise<import("../types/turma.type").TAgendaTurma[]> {
+    return await this.get("/turma/agenda");
+  }
 }
 
 export default TurmaService;

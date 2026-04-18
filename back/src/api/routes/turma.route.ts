@@ -4,6 +4,11 @@ import turmaService from "../services/turma.service";
 
 const turmaRoutes = Router();
 
+turmaRoutes.get("/agenda", async (_req, res) => {
+  const result = await turmaService.getAgenda();
+  res.send(result);
+});
+
 turmaRoutes.get("/", async (req, res) => {
   const pageRaw = Number(req.query.page);
   const limitRaw = Number(req.query.limit);
