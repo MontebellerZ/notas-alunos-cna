@@ -304,7 +304,7 @@ function AtividadeDetalhe() {
           </h3>
           <div className={styles.sectionActions}>
             <Button variant="secondary" size="sm" onClick={abrirLote}>
-              <IoLayersOutline /> Criar em lote
+              <IoLayersOutline /> Criar enumerados
             </Button>
             <Button variant="primary" size="sm" onClick={abrirNovoItem}>
               <IoAddOutline /> Novo item
@@ -452,11 +452,11 @@ function AtividadeDetalhe() {
         <p>Tem certeza que deseja remover este item?</p>
       </Modal>
 
-      {/* ── Modal: Criar em lote ─────────────────────────────── */}
+      {/* ── Modal: Criar enumerados ─────────────────────────────── */}
       <Modal
         isOpen={modal.tipo === "lote"}
         onRequestClose={fecharModal}
-        title="Criar itens em lote"
+        title="Criar itens enumerados"
         width="md"
         actions={
           <>
