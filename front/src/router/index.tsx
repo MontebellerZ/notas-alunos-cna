@@ -4,6 +4,7 @@ import Home from "../components/Screens/Home";
 import Login from "../components/Screens/Login";
 import Turmas from "../components/Screens/Turmas";
 import TurmaDetalhe from "../components/Screens/TurmaDetalhe";
+import TurmaNotas from "../components/Screens/TurmaNotas";
 import Alunos from "../components/Screens/Alunos";
 import AlunoDetalhe from "../components/Screens/AlunoDetalhe";
 import Agenda from "../components/Screens/Agenda";
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "turmas/:id",
         element: <TurmaDetalhe />,
+      },
+      {
+        path: "turmas/:id/notas",
+        element: <TurmaNotas />,
       },
       {
         path: "alunos",

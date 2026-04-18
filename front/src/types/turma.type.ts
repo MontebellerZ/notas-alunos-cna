@@ -28,3 +28,26 @@ export type TAgendaTurma = {
   aulas: TAula[];
 };
 
+export type TAtividadeResumida = {
+  id: number;
+  capitulo: string;
+  peso?: number | null;
+};
+
+export type TAlunoNotas = {
+  id: number;
+  nome: string;
+  notas: Array<{
+    atividadeId: number;
+    valor: number | null;
+    avaliada: boolean;
+  }>;
+};
+
+export type TTurmaNotas = {
+  id: number;
+  nome: string;
+  atividades: TAtividadeResumida[];
+  alunos: TAlunoNotas[];
+};
+

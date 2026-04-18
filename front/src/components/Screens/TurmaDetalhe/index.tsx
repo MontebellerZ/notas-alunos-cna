@@ -9,6 +9,7 @@ import {
   IoSearchOutline,
   IoPencilOutline,
   IoCheckmarkDoneOutline,
+  IoBarChartOutline,
 } from "react-icons/io5";
 import TurmaService from "../../../services/turma.service";
 import AulaService from "../../../services/aula.service";
@@ -423,6 +424,14 @@ function TurmaDetalhe() {
           )}
         </div>
         <div className={styles.detalheHeaderActions}>
+          <Button
+            variant="secondary"
+            size="sm"
+            title="Ver notas da turma"
+            onClick={() => navigate(`/main/turmas/${turmaId}/notas`)}
+          >
+            <IoBarChartOutline /> Notas
+          </Button>
           <Button variant="icon" title="Editar turma" onClick={abrirEditarTurma}>
             <IoPencilOutline />
           </Button>

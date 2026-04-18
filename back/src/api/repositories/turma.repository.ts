@@ -140,6 +140,58 @@ class TurmaRepository extends BaseRepository {
       }))
       .filter((t) => t.aulas.length > 0);
   }
+
+  async getTurmaNotas(id: number) {
+    const turma = await prisma.turma.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        nome: true,
+        atividades: {
+          where: { ativo: true },
+          orderBy: { id: "asc" },
+          select: { id: true, capitulo: true, peso: true },
+        },
+        alunos: {
+          where: { ativo: true },
+          orderBy: { aluno: { nome: "asc" } },
+          select: { aluno: { select: { id: true, nome: true } } },
+        },
+      },
+    });
+
+    if (!turma) return null;
+
+    const atividadeIds = turma.atividades.map((a) => a.id);
+    const alunoIds = turma.alunos.map((ta) => ta.aluno.id);
+
+    const notas = await prisma.nota.findMany({
+      where: { atividadeId: { in: atividadeIds }, alunoId: { in: alunoIds }, ativo: true },
+      select: { alunoId: true, atividadeId: true, valor: true },
+    });
+
+    const notaMap = new Map<number, Map<number, number | null>>();
+    for (const nota of notas) {
+      if (!notaMap.has(nota.alunoId)) notaMap.set(nota.alunoId, new Map());
+      notaMap.get(nota.alunoId)!.set(nota.atividadeId, nota.valor);
+    }
+
+    return {
+      id: turma.id,
+      nome: turma.nome,
+      atividades: turma.atividades,
+      alunos: turma.alunos.map(({ aluno }) => ({
+        id: aluno.id,
+        nome: aluno.nome,
+        notas: turma.atividades.map((a) => {
+          const alunoNotas = notaMap.get(aluno.id);
+          const avaliada = alunoNotas?.has(a.id) ?? false;
+          const valor = avaliada ? (alunoNotas!.get(a.id) ?? null) : null;
+          return { atividadeId: a.id, valor, avaliada };
+        }),
+      })),
+    };
+  }
 }
 
 export default new TurmaRepository();

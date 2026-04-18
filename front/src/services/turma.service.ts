@@ -1,5 +1,5 @@
 import type { TPaginacao } from "../types/paginacao.type";
-import type { TTurma, TTurmaCreate, TTurmaDetalhe } from "../types/turma.type";
+import type { TTurma, TTurmaCreate, TTurmaDetalhe, TTurmaNotas } from "../types/turma.type";
 import BaseService from "./base.service";
 
 class TurmaService extends BaseService {
@@ -9,6 +9,10 @@ class TurmaService extends BaseService {
 
   static async getByIdWithDetails(id: number): Promise<TTurmaDetalhe> {
     return await this.get<TTurmaDetalhe>(`/turma/${id}/detalhes`);
+  }
+
+  static async getTurmaNotas(id: number): Promise<TTurmaNotas> {
+    return await this.get<TTurmaNotas>(`/turma/${id}/notas`);
   }
 
   static async create(data: TTurmaCreate): Promise<TTurma> {

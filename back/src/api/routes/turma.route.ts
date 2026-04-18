@@ -47,6 +47,17 @@ turmaRoutes.get("/:id/detalhes", async (req, res) => {
   res.send(result);
 });
 
+turmaRoutes.get("/:id/notas", async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isFinite(id)) {
+    throw new BadRequestError("Id da turma inválido.");
+  }
+
+  const result = await turmaService.getTurmaNotas(id);
+  res.send(result);
+});
+
 turmaRoutes.post("/:id/aluno", async (req, res) => {
   const turmaId = Number(req.params.id);
   const alunoId = Number(req.body.alunoId);

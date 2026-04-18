@@ -43,6 +43,12 @@ class TurmaService extends BaseService {
   async getAgenda() {
     return await turmaRepository.getAgenda();
   }
+
+  async getTurmaNotas(id: number) {
+    const result = await turmaRepository.getTurmaNotas(id);
+    if (!result) throw new NotFoundError("Turma não encontrada.");
+    return result;
+  }
 }
 
 export default new TurmaService();
