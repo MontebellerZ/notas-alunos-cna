@@ -1,9 +1,31 @@
 import BaseRepository from "./base.repository";
 import prisma from "../../../prisma";
+import type { UserCtx } from "../middleware/auth.middleware";
+
+function userFilter(ctx?: UserCtx) {
+  return ctx && !ctx.isAdmin ? { turma: { usuarioId: ctx.usuarioId } } : {};
+}
 
 class AtividadeRepository extends BaseRepository {
   constructor() {
     super(prisma.atividade as any);
+  }
+
+  async getAll(ctx?: UserCtx) {
+    return await prisma.atividade.findMany({
+      where: { ativo: true, ...userFilter(ctx) },
+      orderBy: { id: "desc" },
+    });
+  }
+
+  async getPaginated(page: number, limit: number, ctx?: UserCtx) {
+    const skip = (page - 1) * limit;
+    const where = { ativo: true, ...userFilter(ctx) };
+    const [items, total] = await Promise.all([
+      prisma.atividade.findMany({ where, orderBy: { id: "desc" }, skip, take: limit }),
+      prisma.atividade.count({ where }),
+    ]);
+    return { items, total };
   }
 
   async getByIdWithDetails(id: number) {

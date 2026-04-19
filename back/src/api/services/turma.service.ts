@@ -1,14 +1,31 @@
 import turmaRepository from "../repositories/turma.repository";
 import { BadRequestError, NotFoundError } from "../errors/errors";
 import BaseService from "./base.service";
+import type { UserCtx } from "../middleware/auth.middleware";
+import Consts from "../../config/consts";
 
 class TurmaService extends BaseService {
   constructor() {
     super(turmaRepository, "Turma");
   }
 
-  async getByIdWithDetails(id: number) {
-    const turma = await turmaRepository.getByIdWithDetails(id);
+  async getAll(ctx?: UserCtx) {
+    return await turmaRepository.getAll(ctx);
+  }
+
+  async getPaginated(page?: number, limit?: number, ctx?: UserCtx) {
+    if (!page && !limit) {
+      return await turmaRepository.getAll(ctx);
+    }
+    page = Math.max(1, page ?? 1);
+    limit = Math.max(1, limit ?? Consts.pageSize);
+    const { items, total } = await turmaRepository.getPaginated(page, limit, ctx);
+    const totalPages = Math.max(1, Math.ceil(total / limit));
+    return { page, limit, total, totalPages, items };
+  }
+
+  async getByIdWithDetails(id: number, ctx?: UserCtx) {
+    const turma = await turmaRepository.getByIdWithDetails(id, ctx);
     if (!turma) throw new NotFoundError("Turma não encontrada.");
     return turma;
   }
@@ -40,12 +57,12 @@ class TurmaService extends BaseService {
     return await turmaRepository.desvincularAluno(turmaId, alunoId);
   }
 
-  async getAgenda() {
-    return await turmaRepository.getAgenda();
+  async getAgenda(ctx?: UserCtx) {
+    return await turmaRepository.getAgenda(ctx);
   }
 
-  async getTurmaNotas(id: number) {
-    const result = await turmaRepository.getTurmaNotas(id);
+  async getTurmaNotas(id: number, ctx?: UserCtx) {
+    const result = await turmaRepository.getTurmaNotas(id, ctx);
     if (!result) throw new NotFoundError("Turma não encontrada.");
     return result;
   }

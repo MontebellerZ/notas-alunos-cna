@@ -24,8 +24,8 @@ model Turma {
   aulasJson  String       @default("[]") @map("aulas_json")
   alunos     TurmaAluno[]
   atividades Atividade[]
-  usuario    Usuario?     @relation(fields: [usuarioId], references: [id])
-  usuarioId  Int?
+  usuario    Usuario      @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
   ativo      Boolean      @default(true)
 }
 

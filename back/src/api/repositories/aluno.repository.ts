@@ -1,21 +1,28 @@
 import BaseRepository from "./base.repository";
 import prisma from "../../../prisma";
+import type { UserCtx } from "../middleware/auth.middleware";
+
+function userFilter(ctx?: UserCtx) {
+  return ctx && !ctx.isAdmin
+    ? { turmas: { some: { ativo: true, turma: { ativo: true, usuarioId: ctx.usuarioId } } } }
+    : {};
+}
 
 class AlunoRepository extends BaseRepository {
   constructor() {
     super(prisma.aluno as any);
   }
 
-  async getAll() {
+  async getAll(ctx?: UserCtx) {
     return await prisma.aluno.findMany({
-      where: { ativo: true },
+      where: { ativo: true, ...userFilter(ctx) },
       orderBy: { nome: "asc" },
     });
   }
 
-  async getPaginated(page: number, limit: number) {
+  async getPaginated(page: number, limit: number, ctx?: UserCtx) {
     const skip = (page - 1) * limit;
-    const where = { ativo: true };
+    const where = { ativo: true, ...userFilter(ctx) };
     const [items, total] = await Promise.all([
       prisma.aluno.findMany({ where, orderBy: { nome: "asc" }, skip, take: limit }),
       prisma.aluno.count({ where }),
@@ -23,12 +30,9 @@ class AlunoRepository extends BaseRepository {
     return { items, total };
   }
 
-  async searchByNome(nome: string) {
+  async searchByNome(nome: string, ctx?: UserCtx) {
     return await prisma.aluno.findMany({
-      where: {
-        ativo: true,
-        nome: { contains: nome },
-      },
+      where: { ativo: true, nome: { contains: nome }, ...userFilter(ctx) },
       orderBy: { nome: "asc" },
       take: 20,
     });
@@ -47,9 +51,10 @@ class AlunoRepository extends BaseRepository {
     });
   }
 
-  async getHistoricoNotas(id: number) {
+  async getHistoricoNotas(id: number, ctx?: UserCtx) {
+    const turmaWhere = ctx && !ctx.isAdmin ? { usuarioId: ctx.usuarioId, ativo: true } : { ativo: true };
     const turmaAlunos = await prisma.turmaAluno.findMany({
-      where: { alunoId: id, ativo: true },
+      where: { alunoId: id, ativo: true, turma: turmaWhere },
       orderBy: { turma: { nome: "asc" } },
       include: {
         turma: {

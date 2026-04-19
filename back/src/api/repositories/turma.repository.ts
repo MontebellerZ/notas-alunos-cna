@@ -1,6 +1,11 @@
 import BaseRepository from "./base.repository";
 import prisma from "../../../prisma";
 import { randomUUID } from "crypto";
+import type { UserCtx } from "../middleware/auth.middleware";
+
+function userFilter(ctx?: UserCtx) {
+  return ctx && !ctx.isAdmin ? { usuarioId: ctx.usuarioId } : {};
+}
 
 export interface AulaJson {
   id: string;
@@ -21,17 +26,17 @@ class TurmaRepository extends BaseRepository {
     super(prisma.turma as any);
   }
 
-  async getAll() {
+  async getAll(ctx?: UserCtx) {
     const turmas = await prisma.turma.findMany({
-      where: { ativo: true },
+      where: { ativo: true, ...userFilter(ctx) },
       orderBy: { nome: "asc" },
     });
     return turmas;
   }
 
-  async getPaginated(page: number, limit: number) {
+  async getPaginated(page: number, limit: number, ctx?: UserCtx) {
     const skip = (page - 1) * limit;
-    const where = { ativo: true };
+    const where = { ativo: true, ...userFilter(ctx) };
     const [items, total] = await Promise.all([
       prisma.turma.findMany({ where, orderBy: { nome: "asc" }, skip, take: limit }),
       prisma.turma.count({ where }),
@@ -39,9 +44,9 @@ class TurmaRepository extends BaseRepository {
     return { items, total };
   }
 
-  async getByIdWithDetails(id: number) {
-    const turma = await prisma.turma.findUnique({
-      where: { id },
+  async getByIdWithDetails(id: number, ctx?: UserCtx) {
+    const turma = await prisma.turma.findFirst({
+      where: { id, ...userFilter(ctx) },
       include: {
         alunos: {
           where: { ativo: true },
@@ -123,9 +128,9 @@ class TurmaRepository extends BaseRepository {
     });
   }
 
-  async getAgenda() {
+  async getAgenda(ctx?: UserCtx) {
     const turmas = await prisma.turma.findMany({
-      where: { ativo: true },
+      where: { ativo: true, ...userFilter(ctx) },
       orderBy: { nome: "asc" },
       select: { id: true, nome: true, sala: true, situacao: true, aulasJson: true },
     });
@@ -141,9 +146,9 @@ class TurmaRepository extends BaseRepository {
       .filter((t) => t.aulas.length > 0);
   }
 
-  async getTurmaNotas(id: number) {
-    const turma = await prisma.turma.findUnique({
-      where: { id },
+  async getTurmaNotas(id: number, ctx?: UserCtx) {
+    const turma = await prisma.turma.findFirst({
+      where: { id, ...userFilter(ctx) },
       select: {
         id: true,
         nome: true,

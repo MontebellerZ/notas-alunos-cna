@@ -1,17 +1,20 @@
 import prisma from "../../../prisma";
+import type { UserCtx } from "../middleware/auth.middleware";
 
 class DashboardRepository {
-  async getDashboard() {
+  async getDashboard(ctx?: UserCtx) {
+    const turmaWhere = { ativo: true, ...(ctx && !ctx.isAdmin ? { usuarioId: ctx.usuarioId } : {}) };
+
     // 1. Totais simples
     const [totalTurmas, totalAlunos, totalAtividades] = await Promise.all([
-      prisma.turma.count({ where: { ativo: true } }),
+      prisma.turma.count({ where: turmaWhere }),
       prisma.aluno.count({ where: { ativo: true } }),
-      prisma.atividade.count({ where: { ativo: true } }),
+      prisma.atividade.count({ where: { ativo: true, turma: turmaWhere } }),
     ]);
 
     // 2. Turmas com atividades e alunos vinculados
     const turmas = await prisma.turma.findMany({
-      where: { ativo: true },
+      where: turmaWhere,
       orderBy: { nome: "asc" },
       select: {
         id: true,

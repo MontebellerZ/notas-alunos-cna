@@ -11,7 +11,7 @@ class UsuarioService {
     const usuario = existente ?? (await usuarioRepository.create(email));
 
     const token = jwt.sign(
-      { id: usuario.id, email: usuario.email },
+      { id: usuario.id, email: usuario.email, admin: usuario.admin },
       envData.jwtSecret,
       { expiresIn: "7d" }
     );

@@ -3,8 +3,10 @@ import jwt from "jsonwebtoken";
 import envData from "../../config/envData";
 import { NotAuthorizedError } from "../errors/errors";
 
+export type UserCtx = { usuarioId: number; isAdmin: boolean };
+
 export interface AuthRequest extends Request {
-  usuario?: { id: number; email: string };
+  usuario?: { id: number; email: string; admin: boolean };
 }
 
 export function authMiddleware(req: AuthRequest, _res: Response, next: NextFunction) {
@@ -17,8 +19,8 @@ export function authMiddleware(req: AuthRequest, _res: Response, next: NextFunct
   const token = authHeader.slice(7);
 
   try {
-    const payload = jwt.verify(token, envData.jwtSecret) as { id: number; email: string };
-    req.usuario = { id: payload.id, email: payload.email };
+    const payload = jwt.verify(token, envData.jwtSecret) as { id: number; email: string; admin: boolean };
+    req.usuario = { id: payload.id, email: payload.email, admin: payload.admin ?? false };
     next();
   } catch {
     throw new NotAuthorizedError("Token inválido ou expirado.");

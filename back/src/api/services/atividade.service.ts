@@ -1,10 +1,27 @@
 import atividadeRepository from "../repositories/atividade.repository";
 import { NotFoundError } from "../errors/errors";
 import BaseService from "./base.service";
+import type { UserCtx } from "../middleware/auth.middleware";
+import Consts from "../../config/consts";
 
 class AtividadeService extends BaseService {
   constructor() {
     super(atividadeRepository, "Atividade");
+  }
+
+  async getAll(ctx?: UserCtx) {
+    return await atividadeRepository.getAll(ctx);
+  }
+
+  async getPaginated(page?: number, limit?: number, ctx?: UserCtx) {
+    if (!page && !limit) {
+      return await atividadeRepository.getAll(ctx);
+    }
+    page = Math.max(1, page ?? 1);
+    limit = Math.max(1, limit ?? Consts.pageSize);
+    const { items, total } = await atividadeRepository.getPaginated(page, limit, ctx);
+    const totalPages = Math.max(1, Math.ceil(total / limit));
+    return { page, limit, total, totalPages, items };
   }
 
   async getByIdWithDetails(id: number) {

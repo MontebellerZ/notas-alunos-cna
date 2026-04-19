@@ -1,8 +1,9 @@
 import dashboardRepository from "../repositories/dashboard.repository";
+import type { UserCtx } from "../middleware/auth.middleware";
 
 class DashboardService {
-  async getDashboard() {
-    return await dashboardRepository.getDashboard();
+  async getDashboard(ctx?: UserCtx) {
+    return await dashboardRepository.getDashboard(ctx);
   }
 }
 
