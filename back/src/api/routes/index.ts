@@ -7,6 +7,7 @@ import atividadeRoutes from "./atividade.route";
 import atividadeItemRoutes from "./atividadeItem.route";
 import notaRoutes from "./nota.route";
 import notaItemRoutes from "./notaItem.route";
+import dashboardRoutes from "./dashboard.route";
 
 const routes = Router();
 
@@ -17,6 +18,7 @@ routes.use("/atividade-item", atividadeItemRoutes);
 routes.use("/nota", notaRoutes);
 routes.use("/nota-item", notaItemRoutes);
 routes.use("/usuario", usuarioRoutes);
+routes.use("/dashboard", dashboardRoutes);
 
 routes.use("/", (req, res) => res.send(`[${req.method} ${req.originalUrl}] ✅ Alive`));
 
