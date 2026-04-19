@@ -12,7 +12,7 @@ import DashboardService from "../../../services/dashboard.service";
 import type { TDashboard, TTurmaDashboard } from "../../../types/dashboard.type";
 import styles from "./styles.module.scss";
 
-function Home() {
+function Dashboard() {
   const navigate = useNavigate();
   const [data, setData] = useState<TDashboard | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -204,5 +204,5 @@ function Home() {
   );
 }
 
-export default Home;
+export default Dashboard;
 

@@ -1,7 +1,6 @@
-import defineStorage from "../defineStorage";
 import type { StorageMap } from "../storageMap";
 
-const useStorage = defineStorage();
+const useStorage = localStorage;
 
 type TStorageClass<K extends keyof StorageMap = keyof StorageMap> = {
   readonly mapKey: K;

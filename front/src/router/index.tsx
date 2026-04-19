@@ -1,6 +1,6 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import Layout from "../components/Layout";
-import Home from "../components/Screens/Home";
+import Dashboard from "../components/Screens/Dashboard";
 import Login from "../components/Screens/Login";
 import Turmas from "../components/Screens/Turmas";
 import TurmaDetalhe from "../components/Screens/TurmaDetalhe";
@@ -23,11 +23,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
-      },
-      {
-        path: "agenda",
-        element: <Agenda />,
+        element: <Navigate to={"turmas"} />,
       },
       {
         path: "turmas",
@@ -40,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "turmas/:id/notas",
         element: <TurmaNotas />,
+      },
+      {
+        path: "agenda",
+        element: <Agenda />,
       },
       {
         path: "alunos",
@@ -60,6 +60,10 @@ const router = createBrowserRouter([
       {
         path: "atividades/:id/relatorio",
         element: <AtividadeRelatorio />,
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
       },
     ],
   },
