@@ -5,6 +5,7 @@ const getEnv = {
   API_PORT: process.env.API_PORT,
   WEB_PORT: process.env.WEB_PORT,
   PROJECT_NAME: process.env.PROJECT_NAME,
+  JWT_SECRET: process.env.JWT_SECRET,
 };
 
 const naoEncontrados = Object.entries(getEnv)
@@ -20,6 +21,7 @@ const envData = {
   apiPort: getEnv.API_PORT!,
   webPort: getEnv.WEB_PORT!,
   projectName: getEnv.PROJECT_NAME!,
+  jwtSecret: getEnv.JWT_SECRET!,
 };
 
 export default envData;

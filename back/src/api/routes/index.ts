@@ -8,16 +8,21 @@ import atividadeItemRoutes from "./atividadeItem.route";
 import notaRoutes from "./nota.route";
 import notaItemRoutes from "./notaItem.route";
 import dashboardRoutes from "./dashboard.route";
+import { authMiddleware } from "../middleware/auth.middleware";
 
 const routes = Router();
 
+// Rota pública
+routes.use("/usuario", usuarioRoutes);
+
+// Rotas protegidas
+routes.use(authMiddleware);
 routes.use("/turma", turmaRoutes);
 routes.use("/aluno", alunoRoutes);
 routes.use("/atividade", atividadeRoutes);
 routes.use("/atividade-item", atividadeItemRoutes);
 routes.use("/nota", notaRoutes);
 routes.use("/nota-item", notaItemRoutes);
-routes.use("/usuario", usuarioRoutes);
 routes.use("/dashboard", dashboardRoutes);
 
 routes.use("/", (req, res) => res.send(`[${req.method} ${req.originalUrl}] ✅ Alive`));

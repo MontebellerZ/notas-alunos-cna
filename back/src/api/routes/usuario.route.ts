@@ -7,9 +7,9 @@ const usuarioRoutes = Router();
 usuarioRoutes.post("/login", async (req, res) => {
   const { email, senha } = req.body as RequestUsuarioLogin;
 
-  await UsuarioService.Login(email, senha);
+  const result = await UsuarioService.Login(email, senha);
 
-  res.send();
+  res.send(result);
 });
 
 export default usuarioRoutes;

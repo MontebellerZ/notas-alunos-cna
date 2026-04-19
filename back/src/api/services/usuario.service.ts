@@ -1,10 +1,23 @@
+import jwt from "jsonwebtoken";
 import CnaApi from "../../automate/cna/api";
-import BaseService from "./base.service";
+import usuarioRepository from "../repositories/usuario.repository";
+import envData from "../../config/envData";
 
-class UsuarioService extends BaseService {
-  static async Login(email: string, senha: string) {
-    return await CnaApi.login(email, senha);
+class UsuarioService {
+  async Login(email: string, senha: string) {
+    await CnaApi.login(email, senha);
+
+    const existente = await usuarioRepository.findByEmail(email);
+    const usuario = existente ?? (await usuarioRepository.create(email));
+
+    const token = jwt.sign(
+      { id: usuario.id, email: usuario.email },
+      envData.jwtSecret,
+      { expiresIn: "7d" }
+    );
+
+    return { usuario, token };
   }
 }
 
-export default UsuarioService;
+export default new UsuarioService();

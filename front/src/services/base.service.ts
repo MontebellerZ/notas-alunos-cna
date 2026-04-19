@@ -1,4 +1,5 @@
 import axios from "axios";
+import TokenStorage from "../stores/store/token.store";
 
 const baseURL = import.meta.env.VITE_API_BASEURL;
 if (!baseURL) throw new Error("VITE_API_BASEURL deve estar configurado no .env");
@@ -6,6 +7,14 @@ if (!baseURL) throw new Error("VITE_API_BASEURL deve estar configurado no .env")
 const api = axios.create({
   baseURL,
   headers: { "Content-Type": "application/json" },
+});
+
+api.interceptors.request.use((config) => {
+  const token = TokenStorage.get();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 function normalizeAxiosError(err: unknown): never {

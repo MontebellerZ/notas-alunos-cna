@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import Button from "../../Shared/Button";
 import UsuarioStorage from "../../../stores/store/usuario.store";
+import TokenStorage from "../../../stores/store/token.store";
 
 function Login() {
   const navigate = useNavigate();
@@ -27,8 +28,9 @@ function Login() {
     setIsLoading(true);
 
     UsuarioService.Login(email.trim(), senha)
-      .then(() => {
+      .then(({ token }) => {
         toast.success(`Login realizado com sucesso!`);
+        TokenStorage.save(token);
         if (manter) UsuarioStorage.save({ email, senha });
         else UsuarioStorage.delete();
         navigate("/main");
