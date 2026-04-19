@@ -16,6 +16,7 @@ class DashboardRepository {
       select: {
         id: true,
         nome: true,
+        situacao: true,
         atividades: {
           where: { ativo: true },
           select: { id: true, capitulo: true },
@@ -33,10 +34,21 @@ class DashboardRepository {
 
     const notas = await prisma.nota.findMany({
       where: { atividadeId: { in: atividadeIds }, alunoId: { in: alunoIds }, ativo: true },
-      select: { atividadeId: true, alunoId: true },
+      select: { atividadeId: true, alunoId: true, valor: true },
     });
 
     const notaSet = new Set(notas.map((n) => `${n.alunoId}-${n.atividadeId}`));
+
+    // Mapa atividadeId → lista de valores (para média)
+    const valoresPorAtividade = new Map<number, number[]>();
+    for (const nota of notas) {
+      if (nota.valor !== null) {
+        if (!valoresPorAtividade.has(nota.atividadeId)) {
+          valoresPorAtividade.set(nota.atividadeId, []);
+        }
+        valoresPorAtividade.get(nota.atividadeId)!.push(nota.valor);
+      }
+    }
 
     // 4. Calcular progresso por turma e atividade
     let totalPendentes = 0;
@@ -56,7 +68,25 @@ class DashboardRepository {
       const pendentes = total - avaliadas;
       totalPendentes += pendentes;
 
-      return { id: turma.id, nome: turma.nome, avaliadas, total, pendentes, atividades };
+      // Média das notas avaliadas desta turma
+      const todosValores = turma.atividades.flatMap(
+        (a) => valoresPorAtividade.get(a.id) ?? []
+      );
+      const media =
+        todosValores.length > 0
+          ? todosValores.reduce((acc, v) => acc + v, 0) / todosValores.length
+          : null;
+
+      return {
+        id: turma.id,
+        nome: turma.nome,
+        situacao: turma.situacao,
+        avaliadas,
+        total,
+        pendentes,
+        media,
+        atividades,
+      };
     });
 
     return {
@@ -72,3 +102,4 @@ class DashboardRepository {
 }
 
 export default new DashboardRepository();
+

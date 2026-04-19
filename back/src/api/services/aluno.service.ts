@@ -16,6 +16,12 @@ class AlunoService extends BaseService {
     if (!aluno) throw new NotFoundError("Aluno não encontrado.");
     return aluno;
   }
+
+  async getHistoricoNotas(id: number) {
+    const aluno = await alunoRepository.getById(id);
+    if (!aluno) throw new NotFoundError("Aluno não encontrado.");
+    return await alunoRepository.getHistoricoNotas(id);
+  }
 }
 
 export default new AlunoService();

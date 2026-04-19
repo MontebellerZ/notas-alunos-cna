@@ -9,9 +9,11 @@ export type TAtividadeDashboard = {
 export type TTurmaDashboard = {
   id: number;
   nome: string;
+  situacao: string | null;
   avaliadas: number;
   total: number;
   pendentes: number;
+  media: number | null;
   atividades: TAtividadeDashboard[];
 };
 

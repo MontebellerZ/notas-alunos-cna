@@ -1,4 +1,4 @@
-import type { TAluno, TAlunoCreate, TAlunoDetalhe } from "../types/aluno.type";
+import type { TAluno, TAlunoCreate, TAlunoDetalhe, TAlunoHistoricoTurma } from "../types/aluno.type";
 import type { TPaginacao } from "../types/paginacao.type";
 import BaseService from "./base.service";
 
@@ -13,6 +13,10 @@ class AlunoService extends BaseService {
 
   static async getByIdWithDetails(id: number): Promise<TAlunoDetalhe> {
     return await this.get<TAlunoDetalhe>(`/aluno/${id}/detalhes`);
+  }
+
+  static async getHistoricoNotas(id: number): Promise<TAlunoHistoricoTurma[]> {
+    return await this.get<TAlunoHistoricoTurma[]>(`/aluno/${id}/historico`);
   }
 
   static async create(data: TAlunoCreate): Promise<TAluno> {

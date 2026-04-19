@@ -10,6 +10,7 @@ import AlunoDetalhe from "../components/Screens/AlunoDetalhe";
 import Agenda from "../components/Screens/Agenda";
 import AtividadeDetalhe from "../components/Screens/AtividadeDetalhe";
 import Avaliacao from "../components/Screens/Avaliacao";
+import AtividadeRelatorio from "../components/Screens/AtividadeRelatorio";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: "atividades/:id/avaliacao",
         element: <Avaliacao />,
+      },
+      {
+        path: "atividades/:id/relatorio",
+        element: <AtividadeRelatorio />,
       },
     ],
   },

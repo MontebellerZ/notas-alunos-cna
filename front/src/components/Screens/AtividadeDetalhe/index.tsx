@@ -10,6 +10,7 @@ import {
   IoListOutline,
   IoLayersOutline,
   IoCheckmarkDoneOutline,
+  IoBarChartOutline,
 } from "react-icons/io5";
 import AtividadeService from "../../../services/atividade.service";
 import AtividadeItemService from "../../../services/atividadeItem.service";
@@ -287,6 +288,14 @@ function AtividadeDetalhe() {
           <span className={styles.subtitulo}>{atividade.turma.nome}</span>
         </div>
         {atividade.peso != null && <span className={styles.pesoTag}>Peso: {atividade.peso}</span>}
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => navigate(`/main/atividades/${atividadeId}/relatorio`)}
+          title="Ver relatório"
+        >
+          <IoBarChartOutline /> Relatório
+        </Button>
         <Button
           variant="secondary"
           size="sm"

@@ -275,6 +275,22 @@
   color: var(--color-text);
 }
 
+.progressMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progressMedia {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #2e7d32;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-radius: 12px;
+  padding: 0.1rem 0.45rem;
+}
+
 .progressPct {
   font-size: 0.82rem;
   font-weight: 700;
@@ -298,5 +314,53 @@
 .progressInfo {
   font-size: 0.75rem;
   color: var(--color-text-secondary);
+}
+
+/* ── Filtro de situação ──────────────────────────────── */
+
+.filtroBar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filtroIcon {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.filtroLabel {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  margin-right: 0.1rem;
+}
+
+.filtroBt {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface, #fff);
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.filtroBtAtivo {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+
+  &:hover {
+    background: var(--color-primary);
+    color: #fff;
+  }
 }
 

@@ -13,3 +13,17 @@ export type TAlunoDetalhe = TAluno & {
   turmas: Array<{ turmaId: number; alunoId: number; ativo: boolean; turma: TTurma }>;
 };
 
+export type TAlunoHistoricoAtividade = {
+  atividadeId: number;
+  capitulo: string;
+  avaliada: boolean;
+  valor: number | null;
+};
+
+export type TAlunoHistoricoTurma = {
+  turmaId: number;
+  turmaNome: string;
+  atividades: TAlunoHistoricoAtividade[];
+  media: number | null;
+};
+

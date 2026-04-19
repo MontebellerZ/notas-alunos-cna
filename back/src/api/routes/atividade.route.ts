@@ -20,6 +20,17 @@ atividadeRoutes.post("/", async (req, res) => {
   res.status(201).send(result);
 });
 
+atividadeRoutes.get("/:id/relatorio", async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isFinite(id)) {
+    throw new BadRequestError("Id da atividade inválido.");
+  }
+
+  const result = await atividadeService.getRelatorio(id);
+  res.send(result);
+});
+
 atividadeRoutes.get("/:id/detalhes", async (req, res) => {
   const id = Number(req.params.id);
 

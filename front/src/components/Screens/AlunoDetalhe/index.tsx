@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useGoBack } from "../../../hooks/useGoBack";
 import { toast } from "react-toastify";
-import { IoArrowBack, IoPencilOutline, IoSchoolOutline } from "react-icons/io5";
+import { IoArrowBack, IoPencilOutline, IoSchoolOutline, IoStatsChartOutline } from "react-icons/io5";
 import AlunoService from "../../../services/aluno.service";
-import type { TAlunoDetalhe } from "../../../types/aluno.type";
+import type { TAlunoDetalhe, TAlunoHistoricoTurma } from "../../../types/aluno.type";
 import type { TAlunoCreate } from "../../../types/aluno.type";
 import Button from "../../Shared/Button";
 import Modal from "../../Shared/Modal";
@@ -20,6 +20,7 @@ function AlunoDetalhe() {
   const goBack = useGoBack();
 
   const [aluno, setAluno] = useState<TAlunoDetalhe | null>(null);
+  const [historico, setHistorico] = useState<TAlunoHistoricoTurma[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [modal, setModal] = useState<ModalState>({ tipo: "fechado" });
@@ -29,10 +30,14 @@ function AlunoDetalhe() {
     if (!id) return;
     let cancelled = false;
 
-    AlunoService.getByIdWithDetails(Number(id))
-      .then((data) => {
+    Promise.all([
+      AlunoService.getByIdWithDetails(Number(id)),
+      AlunoService.getHistoricoNotas(Number(id)),
+    ])
+      .then(([alunoData, historicoData]) => {
         if (cancelled) return;
-        setAluno(data);
+        setAluno(alunoData);
+        setHistorico(historicoData);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -154,6 +159,58 @@ function AlunoDetalhe() {
                 >
                   Ver turma
                 </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Histórico de notas */}
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>
+          <IoStatsChartOutline />
+          Histórico de notas
+        </h3>
+
+        {historico.length === 0 ? (
+          <p className={styles.empty}>Nenhuma nota registrada ainda.</p>
+        ) : (
+          <div className={styles.historicoList}>
+            {historico.map((turma) => (
+              <div key={turma.turmaId} className={styles.historicoTurma}>
+                <div className={styles.historicoTurmaHeader}>
+                  <span className={styles.historicoTurmaNome}>{turma.turmaNome}</span>
+                  {turma.media !== null && (
+                    <span className={styles.historicoMedia}>
+                      Média: {turma.media.toFixed(1)}
+                    </span>
+                  )}
+                </div>
+                <div className={styles.historicoAtividades}>
+                  {turma.atividades.map((atv) => (
+                    <div
+                      key={atv.atividadeId}
+                      className={`${styles.historicoAtv} ${!atv.avaliada ? styles.historicoAtvPendente : ""}`}
+                    >
+                      <span className={styles.historicoAtvNome}>{atv.capitulo}</span>
+                      {atv.avaliada ? (
+                        <span
+                          className={`${styles.historicoNota} ${
+                            atv.valor !== null && atv.valor >= 7
+                              ? styles.historicoNotaOk
+                              : atv.valor !== null && atv.valor >= 5
+                              ? styles.historicoNotaMedio
+                              : styles.historicoNotaBaixo
+                          }`}
+                        >
+                          {atv.valor !== null ? atv.valor.toFixed(1) : "—"}
+                        </span>
+                      ) : (
+                        <span className={styles.historicoPendente}>Pendente</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>

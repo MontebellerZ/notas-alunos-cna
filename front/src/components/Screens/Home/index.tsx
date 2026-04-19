@@ -6,6 +6,7 @@ import {
   IoCheckmarkCircleOutline,
   IoAlertCircleOutline,
   IoBookOutline,
+  IoFilterOutline,
 } from "react-icons/io5";
 import DashboardService from "../../../services/dashboard.service";
 import type { TDashboard, TTurmaDashboard } from "../../../types/dashboard.type";
@@ -15,6 +16,7 @@ function Home() {
   const navigate = useNavigate();
   const [data, setData] = useState<TDashboard | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [apenasEmAndamento, setApenasEmAndamento] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -25,21 +27,25 @@ function Home() {
     return () => { cancelled = true; };
   }, []);
 
-  // Turmas ordenadas por pendentes desc (para "com mais pendências")
-  const turmasRanking: TTurmaDashboard[] = data
-    ? [...data.progresso].sort((a, b) => b.pendentes - a.pendentes).filter((t) => t.pendentes > 0)
+  const progresso: TTurmaDashboard[] = data
+    ? apenasEmAndamento
+      ? data.progresso.filter((t) => t.situacao === "Em andamento")
+      : data.progresso
     : [];
 
-  // Atividades pendentes: todas as atividades com pendentes > 0, da turma mais pendente para menos
-  const atividadesPendentes = data
-    ? data.progresso
-        .flatMap((t) =>
-          t.atividades
-            .filter((a) => a.pendentes > 0)
-            .map((a) => ({ ...a, turmaId: t.id, turmaNome: t.nome })),
-        )
-        .sort((a, b) => b.pendentes - a.pendentes)
-    : [];
+  // Turmas ordenadas por pendentes desc (para "com mais pendências")
+  const turmasRanking: TTurmaDashboard[] = [...progresso]
+    .sort((a, b) => b.pendentes - a.pendentes)
+    .filter((t) => t.pendentes > 0);
+
+  // Atividades pendentes: da turma mais pendente para menos
+  const atividadesPendentes = progresso
+    .flatMap((t) =>
+      t.atividades
+        .filter((a) => a.pendentes > 0)
+        .map((a) => ({ ...a, turmaId: t.id, turmaNome: t.nome })),
+    )
+    .sort((a, b) => b.pendentes - a.pendentes);
 
   if (isLoading) {
     return (
@@ -85,6 +91,24 @@ function Home() {
           <span className={styles.cardValue}>{data.totais.pendentes}</span>
           <span className={styles.cardLabel}>Avaliações pendentes</span>
         </div>
+      </div>
+
+      {/* ── Filtro de situação ────────────────────────────── */}
+      <div className={styles.filtroBar}>
+        <IoFilterOutline className={styles.filtroIcon} />
+        <span className={styles.filtroLabel}>Exibir turmas:</span>
+        <button
+          className={`${styles.filtroBt} ${apenasEmAndamento ? styles.filtroBtAtivo : ""}`}
+          onClick={() => setApenasEmAndamento(true)}
+        >
+          Em andamento
+        </button>
+        <button
+          className={`${styles.filtroBt} ${!apenasEmAndamento ? styles.filtroBtAtivo : ""}`}
+          onClick={() => setApenasEmAndamento(false)}
+        >
+          Todas
+        </button>
       </div>
 
       <div className={styles.grid}>
@@ -149,17 +173,22 @@ function Home() {
           <IoCheckmarkCircleOutline className={styles.sectionIcon} />
           Progresso por turma
         </h3>
-        {data.progresso.length === 0 ? (
-          <p className={styles.emptySection}>Nenhuma turma cadastrada.</p>
+        {progresso.length === 0 ? (
+          <p className={styles.emptySection}>Nenhuma turma{apenasEmAndamento ? " em andamento" : ""} cadastrada.</p>
         ) : (
           <ul className={styles.progressList}>
-            {data.progresso.map((t) => {
+            {progresso.map((t) => {
               const pct = t.total > 0 ? Math.round((t.avaliadas / t.total) * 100) : 0;
               return (
                 <li key={t.id} className={styles.progressItem} onClick={() => navigate(`/main/turmas/${t.id}/notas`)} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && navigate(`/main/turmas/${t.id}/notas`)}>
                   <div className={styles.progressHeader}>
                     <span className={styles.progressNome}>{t.nome}</span>
-                    <span className={styles.progressPct}>{pct}%</span>
+                    <div className={styles.progressMeta}>
+                      {t.media !== null && (
+                        <span className={styles.progressMedia}>Média: {t.media.toFixed(1)}</span>
+                      )}
+                      <span className={styles.progressPct}>{pct}%</span>
+                    </div>
                   </div>
                   <div className={styles.progressBar}>
                     <div className={styles.progressFill} style={{ width: `${pct}%` }} />

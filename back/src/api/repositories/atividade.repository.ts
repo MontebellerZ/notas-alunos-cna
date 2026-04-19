@@ -112,6 +112,64 @@ class AtividadeRepository extends BaseRepository {
       return true;
     });
   }
+
+  async getRelatorio(id: number) {
+    const atividade = await prisma.atividade.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        capitulo: true,
+        turma: {
+          select: {
+            id: true,
+            nome: true,
+            alunos: { where: { ativo: true }, select: { alunoId: true } },
+          },
+        },
+        notas: {
+          where: { ativo: true },
+          select: { valor: true },
+        },
+      },
+    });
+
+    if (!atividade) return null;
+
+    const totalAlunos = atividade.turma.alunos.length;
+    const avaliados = atividade.notas.length;
+    const pendentes = totalAlunos - avaliados;
+
+    const valores = atividade.notas
+      .map((n) => n.valor)
+      .filter((v): v is number => v !== null);
+
+    const media =
+      valores.length > 0 ? valores.reduce((a, b) => a + b, 0) / valores.length : null;
+    const min = valores.length > 0 ? Math.min(...valores) : null;
+    const max = valores.length > 0 ? Math.max(...valores) : null;
+
+    const faixas = [
+      { label: "0 – 2", count: valores.filter((v) => v < 2).length },
+      { label: "2 – 4", count: valores.filter((v) => v >= 2 && v < 4).length },
+      { label: "4 – 6", count: valores.filter((v) => v >= 4 && v < 6).length },
+      { label: "6 – 8", count: valores.filter((v) => v >= 6 && v < 8).length },
+      { label: "8 – 10", count: valores.filter((v) => v >= 8).length },
+    ];
+
+    return {
+      atividadeId: atividade.id,
+      capitulo: atividade.capitulo,
+      turmaId: atividade.turma.id,
+      turmaNome: atividade.turma.nome,
+      total: totalAlunos,
+      avaliados,
+      pendentes,
+      media,
+      min,
+      max,
+      faixas,
+    };
+  }
 }
 
 export default new AtividadeRepository();

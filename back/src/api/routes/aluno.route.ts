@@ -28,6 +28,17 @@ alunoRoutes.post("/", async (req, res) => {
   res.status(201).send(result);
 });
 
+alunoRoutes.get("/:id/historico", async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isFinite(id)) {
+    throw new BadRequestError("Id do aluno inválido.");
+  }
+
+  const result = await alunoService.getHistoricoNotas(id);
+  res.send(result);
+});
+
 alunoRoutes.get("/:id/detalhes", async (req, res) => {
   const id = Number(req.params.id);
 

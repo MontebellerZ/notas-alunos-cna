@@ -44,3 +44,17 @@ export type TAvaliacaoData = TAtividade & {
   atividadeItens: TAtividadeItem[];
   notas: TNotaAvaliacao[];
 };
+
+export type TAtividadeRelatorio = {
+  atividadeId: number;
+  capitulo: string;
+  turmaId: number;
+  turmaNome: string;
+  total: number;
+  avaliados: number;
+  pendentes: number;
+  media: number | null;
+  min: number | null;
+  max: number | null;
+  faixas: { label: string; count: number }[];
+};

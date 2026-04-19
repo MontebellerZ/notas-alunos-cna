@@ -1,4 +1,5 @@
 import atividadeRepository from "../repositories/atividade.repository";
+import { NotFoundError } from "../errors/errors";
 import BaseService from "./base.service";
 
 class AtividadeService extends BaseService {
@@ -19,6 +20,12 @@ class AtividadeService extends BaseService {
     entradas: { alunoId: number; atividadeItemId: number; valor: number }[]
   ) {
     return await atividadeRepository.salvarAvaliacao(atividadeId, entradas);
+  }
+
+  async getRelatorio(id: number) {
+    const relatorio = await atividadeRepository.getRelatorio(id);
+    if (!relatorio) throw new NotFoundError("Atividade não encontrada.");
+    return relatorio;
   }
 }
 
