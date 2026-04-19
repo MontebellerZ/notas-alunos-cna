@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Menu } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,12 +11,16 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1280,
     height: 800,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
     },
   });
+
+  win.setMenuBarVisibility(false);
+  win.removeMenu();
 
   if (isDev) {
     win.loadURL(`http://localhost:${devPort}`);
@@ -28,6 +32,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  Menu.setApplicationMenu(null);
   createWindow();
 
   app.on("activate", () => {
