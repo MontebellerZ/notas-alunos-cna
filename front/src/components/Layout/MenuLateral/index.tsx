@@ -1,6 +1,9 @@
 import { useEffect, useRef } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import styles from "./styles.module.scss";
+import { IoLogOutOutline } from "react-icons/io5";
+import TokenStorage from "../../../stores/store/token.store";
+import UsuarioStorage from "../../../stores/store/usuario.store";
 
 type MenuLateralProps = {
   isOpen: boolean;
@@ -16,6 +19,14 @@ const menuItems = [
 
 function MenuLateral({ isOpen, onClose }: MenuLateralProps) {
   const drawerRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    TokenStorage.delete();
+    UsuarioStorage.delete();
+    onClose();
+    navigate("/");
+  }
 
   useEffect(() => {
     if (isOpen) {
@@ -63,6 +74,13 @@ function MenuLateral({ isOpen, onClose }: MenuLateralProps) {
             </NavLink>
           ))}
         </nav>
+
+        <footer className={styles.footer}>
+          <button type="button" className={styles.logoutButton} onClick={handleLogout}>
+            <IoLogOutOutline size={18} />
+            <span>Sair</span>
+          </button>
+        </footer>
       </aside>
     </>
   );

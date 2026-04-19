@@ -102,3 +102,34 @@
   color: var(--color-primary);
   box-shadow: inset 3px 0 0 var(--color-primary);
 }
+
+.footer {
+  margin-top: auto;
+  padding-top: 0.9rem;
+  border-top: 1.5px solid rgba(var(--color-accent-mid-rgb), 0.2);
+}
+
+.logoutButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.72rem 0.85rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    color 170ms ease,
+    background-color 170ms ease,
+    transform 170ms ease;
+
+  &:hover {
+    background: rgba(var(--color-accent-mid-rgb), 0.1);
+    color: var(--color-primary);
+    transform: translateX(2px);
+  }
+}
