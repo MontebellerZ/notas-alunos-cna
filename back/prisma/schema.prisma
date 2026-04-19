@@ -6,6 +6,14 @@ datasource db {
   provider = "sqlite"
 }
 
+model Usuario {
+  id     Int     @id @default(autoincrement())
+  email  String  @unique
+  nome   String?
+  turmas Turma[]
+  admin  Boolean @default(false)
+}
+
 model Turma {
   id         Int          @id @default(autoincrement())
   nome       String
@@ -16,6 +24,8 @@ model Turma {
   aulasJson  String       @default("[]") @map("aulas_json")
   alunos     TurmaAluno[]
   atividades Atividade[]
+  usuario    Usuario?     @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int?
   ativo      Boolean      @default(true)
 }
 
