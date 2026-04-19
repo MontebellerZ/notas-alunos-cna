@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to={"turmas"} />,
+        element: <Navigate to={"turmas"} replace/>,
       },
       {
         path: "turmas",
