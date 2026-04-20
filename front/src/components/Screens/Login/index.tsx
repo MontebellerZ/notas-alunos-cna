@@ -20,6 +20,8 @@ function Login() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [senhaManual, setSenhaManual] = useState(!usuarioSalvo?.senha);
 
+  const SENHA_PLACEHOLDER = "______";
+
   const submitLogin = async (event?: React.SubmitEvent<HTMLFormElement>) => {
     event?.preventDefault();
 
@@ -72,7 +74,7 @@ function Login() {
               id="senha"
               type={mostrarSenha ? "text" : "password"}
               autoComplete="current-password"
-              value={senha}
+              value={senhaManual ? senha : SENHA_PLACEHOLDER}
               onKeyDown={(event) => {
                 if (!senhaManual) {
                   event.preventDefault();
