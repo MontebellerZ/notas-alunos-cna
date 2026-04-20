@@ -60,6 +60,36 @@
   }
 }
 
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+
+  .input {
+    margin-bottom: 0;
+    flex: 1;
+    padding-right: 42px;
+  }
+}
+
+.eyeButton {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
 .input {
   border: 1.5px solid var(--color-border);
   border-radius: 10px;
@@ -70,6 +100,8 @@
   color: var(--color-text-primary);
   margin-bottom: 8px;
   outline: none;
+  width: 100%;
+  box-sizing: border-box;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import Button from "../../Shared/Button";
 import UsuarioStorage from "../../../stores/store/usuario.store";
 import TokenStorage from "../../../stores/store/token.store";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ function Login() {
   const [senha, setSenha] = useState(usuarioSalvo?.senha ?? "");
   const [manter, setManter] = useState(!!usuarioSalvo);
   const [isLoading, setIsLoading] = useState(false);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [senhaManual, setSenhaManual] = useState(!usuarioSalvo?.senha);
 
   const submitLogin = async (event?: React.SubmitEvent<HTMLFormElement>) => {
     event?.preventDefault();
@@ -64,16 +67,36 @@ function Login() {
           <label htmlFor="senha" className={styles.label}>
             Senha
           </label>
-          <input
-            id="senha"
-            type="password"
-            autoComplete="current-password"
-            value={senha}
-            onChange={(event) => setSenha(event.target.value)}
-            placeholder="Digite sua senha"
-            className={styles.input}
-            disabled={isLoading}
-          />
+          <div className={styles.inputWrapper}>
+            <input
+              id="senha"
+              type={mostrarSenha ? "text" : "password"}
+              autoComplete="current-password"
+              value={senha}
+              onKeyDown={(event) => {
+                if (!senhaManual) {
+                  event.preventDefault();
+                  setSenha("");
+                  setSenhaManual(true);
+                }
+              }}
+              onChange={(event) => setSenha(event.target.value)}
+              placeholder="Digite sua senha"
+              className={styles.input}
+              disabled={isLoading}
+            />
+            {senhaManual && (
+              <button
+                type="button"
+                className={styles.eyeButton}
+                onClick={() => setMostrarSenha((v) => !v)}
+                tabIndex={-1}
+                aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+              >
+                {mostrarSenha ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+              </button>
+            )}
+          </div>
 
           <label htmlFor="manterConectado" className={styles.labelCheckbox}>
             <input
