@@ -6,6 +6,7 @@ if (!process.env.VITE_PORT) throw new Error("process.env.VITE_PORT não configur
 
 export default defineConfig({
   server: {
+    host: true,
     port: +process.env.VITE_PORT,
     strictPort: true,
   },

@@ -6,9 +6,7 @@ import "../prisma";
 
 const app = express();
 
-app.use(
-  cors({ origin: [`http://localhost:${envData.webPort}`, `http://127.0.0.1:${envData.webPort}`] }),
-);
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
