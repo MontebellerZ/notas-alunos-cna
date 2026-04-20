@@ -43,13 +43,13 @@ atividadeRoutes.get("/:id/avaliacao", async (req, res) => {
 atividadeRoutes.put("/:id/avaliacao", async (req, res) => {
   const id = parseRequiredNumber(req.params.id, "Id da atividade inválido.");
 
-  const { entradas } = req.body;
+  const { entradas, deletar } = req.body;
 
   if (!Array.isArray(entradas)) {
     throw new BadRequestError("Campo 'entradas' deve ser um array.");
   }
 
-  await atividadeService.salvarAvaliacao(id, entradas);
+  await atividadeService.salvarAvaliacao(id, entradas, Array.isArray(deletar) ? deletar : []);
   res.send({ ok: true });
 });
 

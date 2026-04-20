@@ -34,9 +34,10 @@ class AtividadeService extends BaseService {
 
   async salvarAvaliacao(
     atividadeId: number,
-    entradas: { alunoId: number; atividadeItemId: number; valor: number }[]
+    entradas: { alunoId: number; atividadeItemId: number; valor: number }[],
+    deletar: { alunoId: number; atividadeItemId: number }[] = []
   ) {
-    return await atividadeRepository.salvarAvaliacao(atividadeId, entradas);
+    return await atividadeRepository.salvarAvaliacao(atividadeId, entradas, deletar);
   }
 
   async getRelatorio(id: number) {

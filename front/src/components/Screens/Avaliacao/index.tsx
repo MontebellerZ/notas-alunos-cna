@@ -8,6 +8,7 @@ import {
   IoRemoveCircleOutline,
   IoCloseCircleOutline,
   IoSaveOutline,
+  IoTrashOutline,
 } from "react-icons/io5";
 import AtividadeService from "../../../services/atividade.service";
 import type { TAvaliacaoData } from "../../../types/atividade.type";
@@ -170,15 +171,26 @@ function Avaliacao() {
       });
     }
 
+    const deletar: { alunoId: number; atividadeItemId: number }[] = [];
+    for (const [key, savedValor] of Object.entries(savedGrade)) {
+      if (savedValor !== null && grade[key] === null) {
+        const [alunoIdStr, itemIdStr] = key.split("-");
+        deletar.push({
+          alunoId: Number(alunoIdStr),
+          atividadeItemId: Number(itemIdStr),
+        });
+      }
+    }
+
     setIsSaving(true);
-    AtividadeService.salvarAvaliacao(atividadeId, entradas)
+    AtividadeService.salvarAvaliacao(atividadeId, entradas, deletar)
       .then(() => {
         setSavedGrade({ ...grade });
         toast.success("Avaliação salva!");
       })
       .catch((err) => toast.error(String(err?.message ?? err)))
       .finally(() => setIsSaving(false));
-  }, [atividadeId, data, grade]);
+  }, [atividadeId, data, grade, savedGrade]);
 
   const handleVoltar = () => {
     if (isDirty) {
@@ -285,6 +297,13 @@ function Avaliacao() {
                               title="Errado (0)"
                             >
                               <IoCloseCircleOutline />
+                            </button>
+                            <button
+                              className={`${styles.popBtn} ${styles.popLimpar}`}
+                              onClick={() => setValor(aluno.id, item.id, null)}
+                              title="Remover avaliação"
+                            >
+                              <IoTrashOutline />
                             </button>
                           </div>
                         )}

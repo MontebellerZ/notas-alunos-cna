@@ -16,9 +16,10 @@ class AtividadeService extends BaseService {
 
   static async salvarAvaliacao(
     id: number,
-    entradas: { alunoId: number; atividadeItemId: number; valor: number }[]
+    entradas: { alunoId: number; atividadeItemId: number; valor: number }[],
+    deletar: { alunoId: number; atividadeItemId: number }[] = []
   ): Promise<void> {
-    await this.put<void>(`/atividade/${id}/avaliacao`, { entradas });
+    await this.put<void>(`/atividade/${id}/avaliacao`, { entradas, deletar });
   }
 
   static async getRelatorio(id: number): Promise<TAtividadeRelatorio> {

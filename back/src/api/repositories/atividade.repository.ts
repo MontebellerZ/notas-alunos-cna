@@ -74,10 +74,14 @@ class AtividadeRepository extends BaseRepository {
 
   async salvarAvaliacao(
     atividadeId: number,
-    entradas: { alunoId: number; atividadeItemId: number; valor: number }[]
+    entradas: { alunoId: number; atividadeItemId: number; valor: number }[],
+    deletar: { alunoId: number; atividadeItemId: number }[] = []
   ) {
     return await prisma.$transaction(async (tx) => {
-      const alunoIds = [...new Set(entradas.map((e) => e.alunoId))];
+      const alunoIds = [...new Set([
+        ...entradas.map((e) => e.alunoId),
+        ...deletar.map((d) => d.alunoId),
+      ])];
 
       // Garantir que existe uma Nota para cada aluno
       const notasExistentes = await tx.nota.findMany({
@@ -90,6 +94,21 @@ class AtividadeRepository extends BaseRepository {
         if (!notaMap.has(alunoId)) {
           const nova = await tx.nota.create({ data: { atividadeId, alunoId } });
           notaMap.set(alunoId, nova);
+        }
+      }
+
+      // Soft-delete dos NotaItens removidos
+      for (const d of deletar) {
+        const nota = notaMap.get(d.alunoId);
+        if (!nota) continue;
+        const existente = await tx.notaItem.findFirst({
+          where: { notaId: nota.id, atividadeItemId: d.atividadeItemId, ativo: true },
+        });
+        if (existente) {
+          await tx.notaItem.update({
+            where: { id: existente.id },
+            data: { ativo: false },
+          });
         }
       }
 
