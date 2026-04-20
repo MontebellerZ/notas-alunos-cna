@@ -8,10 +8,25 @@ import {
   IoPersonOutline,
 } from "react-icons/io5";
 import AlunoService from "../../../services/aluno.service";
+import TurmaService from "../../../services/turma.service";
 import type { TAluno, TAlunoCreate } from "../../../types/aluno.type";
+import type { TTurma } from "../../../types/turma.type";
+import TokenStorage from "../../../stores/store/token.store";
 import Button from "../../Shared/Button";
 import Modal from "../../Shared/Modal";
 import styles from "./styles.module.scss";
+
+function getIsAdmin(): boolean {
+  const token = TokenStorage.get();
+  if (!token) return false;
+  try {
+    const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const payload = JSON.parse(atob(base64)) as { admin?: boolean };
+    return payload.admin === true;
+  } catch {
+    return false;
+  }
+}
 
 const ITEMS_POR_PAGINA = 12;
 
@@ -38,6 +53,10 @@ function Alunos() {
   const [isSaving, setIsSaving] = useState(false);
   const [modal, setModal] = useState<ModalState>({ tipo: "fechado" });
   const [form, setForm] = useState<AlunoFormState>(formVazio);
+  const [turmas, setTurmas] = useState<TTurma[]>([]);
+  const [selectedTurmaIds, setSelectedTurmaIds] = useState<number[]>([]);
+  const [isLoadingTurmas, setIsLoadingTurmas] = useState(false);
+  const isAdmin = getIsAdmin();
 
   const recarregar = () => setReloadKey((k) => k + 1);
 
@@ -65,7 +84,13 @@ function Alunos() {
 
   const abrirCriar = () => {
     setForm(formVazio);
+    setSelectedTurmaIds([]);
     setModal({ tipo: "criar" });
+    setIsLoadingTurmas(true);
+    TurmaService.getPaginated(1, 999)
+      .then((res) => setTurmas(res.items))
+      .catch(() => setTurmas([]))
+      .finally(() => setIsLoadingTurmas(false));
   };
 
   const abrirEditar = (aluno: TAluno) => {
@@ -80,11 +105,23 @@ function Alunos() {
   const fecharModal = () => {
     if (isSaving) return;
     setModal({ tipo: "fechado" });
+    setSelectedTurmaIds([]);
+  };
+
+  const toggleTurma = (id: number) => {
+    setSelectedTurmaIds((prev) =>
+      prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]
+    );
   };
 
   const handleSalvar = async () => {
     if (!form.nome.trim()) {
       toast.warn("O nome do aluno é obrigatório.");
+      return;
+    }
+
+    if (modal.tipo === "criar" && !isAdmin && selectedTurmaIds.length === 0) {
+      toast.warn("Selecione pelo menos uma turma para vincular o aluno.");
       return;
     }
 
@@ -97,6 +134,12 @@ function Alunos() {
 
     if (modal.tipo === "criar") {
       AlunoService.create(payload)
+        .then((aluno) => {
+          const vinculos = selectedTurmaIds.map((turmaId) =>
+            TurmaService.vincularAluno(turmaId, aluno.id)
+          );
+          return Promise.all(vinculos);
+        })
         .then(() => {
           toast.success("Aluno cadastrado com sucesso!");
           fecharModal();
@@ -261,6 +304,29 @@ function Alunos() {
             placeholder="Idade (opcional)"
           />
         </div>
+        {modal.tipo === "criar" && (
+          <div className={styles.formGroup}>
+            <label>Turmas{isAdmin ? " (opcional)" : " *"}</label>
+            {isLoadingTurmas ? (
+              <p className={styles.turmaHint}>Carregando turmas...</p>
+            ) : turmas.length === 0 ? (
+              <p className={styles.turmaHint}>Nenhuma turma disponível.</p>
+            ) : (
+              <div className={styles.turmaList}>
+                {turmas.map((t) => (
+                  <label key={t.id} className={styles.turmaItem}>
+                    <input
+                      type="checkbox"
+                      checked={selectedTurmaIds.includes(t.id)}
+                      onChange={() => toggleTurma(t.id)}
+                    />
+                    {t.nome}{t.sala ? ` — ${t.sala}` : ""}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </Modal>
 
       {/* Modal: excluir */}
