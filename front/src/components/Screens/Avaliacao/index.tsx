@@ -71,6 +71,8 @@ function Avaliacao() {
   const [savedGrade, setSavedGrade] = useState<GradeMap>({});
   const [popover, setPopover] = useState<PopoverState>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const [restantesPopover, setRestantesPopover] = useState<number | null>(null);
+  const restantesPopoverRef = useRef<HTMLDivElement>(null);
   const [confirmSair, setConfirmSair] = useState(false);
 
   const isDirty = JSON.stringify(grade) !== JSON.stringify(savedGrade);
@@ -108,12 +110,44 @@ function Avaliacao() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [popover]);
 
+  // Fechar popover de restantes ao clicar fora
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (restantesPopoverRef.current && !restantesPopoverRef.current.contains(e.target as Node)) {
+        setRestantesPopover(null);
+      }
+    }
+    if (restantesPopover !== null) {
+      document.addEventListener("mousedown", handleClick);
+    }
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [restantesPopover]);
+
   const togglePopover = (alunoId: number, itemId: number) => {
     setPopover((prev) =>
       prev?.alunoId === alunoId && prev?.itemId === itemId
         ? null
         : { alunoId, itemId }
     );
+  };
+
+  const toggleRestantesPopover = (alunoId: number) => {
+    setRestantesPopover((prev) => (prev === alunoId ? null : alunoId));
+  };
+
+  const setRestantesValor = (alunoId: number, valor: ValorNota) => {
+    if (valor === null || !data) return;
+    setGrade((g) => {
+      const updated = { ...g };
+      for (const item of data.atividadeItens) {
+        const key = `${alunoId}-${item.id}`;
+        if (updated[key] === null || updated[key] === undefined) {
+          updated[key] = valor;
+        }
+      }
+      return updated;
+    });
+    setRestantesPopover(null);
   };
 
   const setValor = (alunoId: number, itemId: number, valor: ValorNota) => {
@@ -207,6 +241,7 @@ function Avaliacao() {
                   <span className={styles.itemPeso}>peso {item.peso}</span>
                 </th>
               ))}
+              <th className={`${styles.th} ${styles.thRestantes}`}>Restantes</th>
               <th className={`${styles.th} ${styles.thTotal}`}>Total</th>
             </tr>
           </thead>
@@ -257,6 +292,42 @@ function Avaliacao() {
                     </td>
                   );
                 })}
+                <td className={`${styles.td} ${styles.tdRestantes}`}>
+                  <div className={styles.cellWrapper}>
+                    <button
+                      className={styles.restantesBtn}
+                      onClick={() => toggleRestantesPopover(aluno.id)}
+                      title="Marcar itens não avaliados"
+                    >
+                      Restantes
+                    </button>
+                    {restantesPopover === aluno.id && (
+                      <div className={styles.popover} ref={restantesPopoverRef}>
+                        <button
+                          className={`${styles.popBtn} ${styles.popCerto}`}
+                          onClick={() => setRestantesValor(aluno.id, 1)}
+                          title="Certo (1)"
+                        >
+                          <IoCheckmarkCircleOutline />
+                        </button>
+                        <button
+                          className={`${styles.popBtn} ${styles.popMeio}`}
+                          onClick={() => setRestantesValor(aluno.id, 0.5)}
+                          title="Meio certo (0,5)"
+                        >
+                          <IoRemoveCircleOutline />
+                        </button>
+                        <button
+                          className={`${styles.popBtn} ${styles.popErrado}`}
+                          onClick={() => setRestantesValor(aluno.id, 0)}
+                          title="Errado (0)"
+                        >
+                          <IoCloseCircleOutline />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </td>
                 <td className={`${styles.td} ${styles.tdTotal}`}>
                   {calcTotal(aluno.id, itens, grade).toFixed(2)}
                 </td>

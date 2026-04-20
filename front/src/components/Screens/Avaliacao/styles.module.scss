@@ -77,8 +77,16 @@
   min-width: 180px;
 }
 
+.thRestantes {
+  min-width: 90px;
+}
+
 .thTotal {
   min-width: 70px;
+}
+
+.tdRestantes {
+  white-space: nowrap;
 }
 
 .itemNome {
@@ -187,6 +195,25 @@
 .cellVazio {
   font-size: 0.8rem;
   color: var(--color-text-secondary, #bbb);
+}
+
+.restantesBtn {
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1.5px solid var(--color-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary, #666);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(var(--color-primary-rgb, 0, 100, 200), 0.06);
+  }
 }
 
 /* ── Popover ─────────────────────────────────────────── */
