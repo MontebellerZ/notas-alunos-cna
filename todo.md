@@ -1,3 +1,2 @@
-- permitir o usuário colapsar a lista de alunos e a lista de atividades na tela da turma
 - paginação de alunos ta zuada
 - alterar o gráfico de distribuição de notas para mostrar um gráfico de barras vertical

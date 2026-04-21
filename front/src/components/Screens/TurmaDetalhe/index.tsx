@@ -12,7 +12,6 @@ import {
   IoCheckmarkDoneOutline,
   IoBarChartOutline,
   IoChevronDownOutline,
-  IoChevronUpOutline,
 } from "react-icons/io5";
 import TurmaService from "../../../services/turma.service";
 import AulaService from "../../../services/aula.service";
@@ -521,7 +520,7 @@ function TurmaDetalhe() {
         </section>
 
         {/* ── Alunos ─────────────────────────────────────── */}
-        <section className={styles.section}>
+        <section className={`${styles.section} ${styles.sectionCollapsible}`}>
           <div className={styles.sectionHeader}>
             <h3 className={styles.sectionTitle}>Alunos</h3>
             <div className={styles.sectionHeaderActions}>
@@ -533,7 +532,12 @@ function TurmaDetalhe() {
                 aria-controls="turma-alunos-conteudo"
                 onClick={() => alternarSecao("alunos")}
               >
-                {secoesAbertas.alunos ? <IoChevronUpOutline /> : <IoChevronDownOutline />}
+                <span
+                  className={`${styles.toggleIcon} ${secoesAbertas.alunos ? styles.toggleIconOpen : ""}`}
+                  aria-hidden="true"
+                >
+                  <IoChevronDownOutline />
+                </span>
                 {secoesAbertas.alunos ? "Ocultar" : "Mostrar"}
               </Button>
               <Button
@@ -545,40 +549,47 @@ function TurmaDetalhe() {
               </Button>
             </div>
           </div>
-          <div id="turma-alunos-conteudo" hidden={!secoesAbertas.alunos}>
-            {turma.alunos.length === 0 ? (
-              <p className={styles.empty}>Nenhum aluno nesta turma.</p>
-            ) : (
-              <ul className={styles.itemList}>
-                {turma.alunos.map(({ aluno }) => (
-                  <li key={aluno.id} className={styles.item}>
-                    <span className={styles.itemMain}>{aluno.nome}</span>
-                    {aluno.idade && (
-                      <span className={styles.itemSub}>{aluno.idade} anos</span>
-                    )}
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      title="Remover aluno da turma"
-                      onClick={() =>
-                        setModal({
-                          tipo: "remover-aluno",
-                          alunoId: aluno.id,
-                          nome: aluno.nome,
-                        })
-                      }
-                    >
-                      <IoTrashOutline />
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            )}
+          <div
+            id="turma-alunos-conteudo"
+            className={`${styles.collapsibleContent} ${!secoesAbertas.alunos ? styles.collapsibleContentClosed : ""}`}
+            aria-hidden={!secoesAbertas.alunos}
+            inert={!secoesAbertas.alunos}
+          >
+            <div className={styles.collapsibleInner}>
+              {turma.alunos.length === 0 ? (
+                <p className={styles.empty}>Nenhum aluno nesta turma.</p>
+              ) : (
+                <ul className={styles.itemList}>
+                  {turma.alunos.map(({ aluno }) => (
+                    <li key={aluno.id} className={styles.item}>
+                      <span className={styles.itemMain}>{aluno.nome}</span>
+                      {aluno.idade && (
+                        <span className={styles.itemSub}>{aluno.idade} anos</span>
+                      )}
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        title="Remover aluno da turma"
+                        onClick={() =>
+                          setModal({
+                            tipo: "remover-aluno",
+                            alunoId: aluno.id,
+                            nome: aluno.nome,
+                          })
+                        }
+                      >
+                        <IoTrashOutline />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </section>
 
         {/* ── Atividades ─────────────────────────────────── */}
-        <section className={styles.section}>
+        <section className={`${styles.section} ${styles.sectionCollapsible}`}>
           <div className={styles.sectionHeader}>
             <h3 className={styles.sectionTitle}>Atividades</h3>
             <div className={styles.sectionHeaderActions}>
@@ -590,7 +601,12 @@ function TurmaDetalhe() {
                 aria-controls="turma-atividades-conteudo"
                 onClick={() => alternarSecao("atividades")}
               >
-                {secoesAbertas.atividades ? <IoChevronUpOutline /> : <IoChevronDownOutline />}
+                <span
+                  className={`${styles.toggleIcon} ${secoesAbertas.atividades ? styles.toggleIconOpen : ""}`}
+                  aria-hidden="true"
+                >
+                  <IoChevronDownOutline />
+                </span>
                 {secoesAbertas.atividades ? "Ocultar" : "Mostrar"}
               </Button>
               <Button
@@ -602,52 +618,59 @@ function TurmaDetalhe() {
               </Button>
             </div>
           </div>
-          <div id="turma-atividades-conteudo" hidden={!secoesAbertas.atividades}>
-            {turma.atividades.length === 0 ? (
-              <p className={styles.empty}>Nenhuma atividade cadastrada.</p>
-            ) : (
-              <ul className={styles.itemList}>
-                {turma.atividades.map((atividade) => (
-                  <li
-                    key={atividade.id}
-                    className={`${styles.item} ${styles.itemClickable}`}
-                    onClick={() => navigate(`/main/atividades/${atividade.id}`)}
-                  >
-                    <span className={styles.itemMain}>{atividade.capitulo}</span>
-                    {atividade.peso != null && (
-                      <span className={styles.itemSub}>Peso: {atividade.peso}</span>
-                    )}
-                    <Button
-                      variant="icon"
-                      title="Avaliar alunos"
-                      onClick={(e) => { e.stopPropagation(); navigate(`/main/atividades/${atividade.id}/avaliacao`); }}
+          <div
+            id="turma-atividades-conteudo"
+            className={`${styles.collapsibleContent} ${!secoesAbertas.atividades ? styles.collapsibleContentClosed : ""}`}
+            aria-hidden={!secoesAbertas.atividades}
+            inert={!secoesAbertas.atividades}
+          >
+            <div className={styles.collapsibleInner}>
+              {turma.atividades.length === 0 ? (
+                <p className={styles.empty}>Nenhuma atividade cadastrada.</p>
+              ) : (
+                <ul className={styles.itemList}>
+                  {turma.atividades.map((atividade) => (
+                    <li
+                      key={atividade.id}
+                      className={`${styles.item} ${styles.itemClickable}`}
+                      onClick={() => navigate(`/main/atividades/${atividade.id}`)}
                     >
-                      <IoCheckmarkDoneOutline />
-                    </Button>
-                    <Button
-                      variant="icon"
-                      title="Editar atividade"
-                      onClick={(e) => { e.stopPropagation(); abrirEditarAtividade(atividade); }}
-                    >
-                      <IoPencilOutline />
-                    </Button>
-                    <Button
-                      variant="icon-danger"
-                      title="Remover atividade"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setModal({
-                          tipo: "remover-atividade",
-                          atividadeId: atividade.id,
-                        });
-                      }}
-                    >
-                      <IoTrashOutline />
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            )}
+                      <span className={styles.itemMain}>{atividade.capitulo}</span>
+                      {atividade.peso != null && (
+                        <span className={styles.itemSub}>Peso: {atividade.peso}</span>
+                      )}
+                      <Button
+                        variant="icon"
+                        title="Avaliar alunos"
+                        onClick={(e) => { e.stopPropagation(); navigate(`/main/atividades/${atividade.id}/avaliacao`); }}
+                      >
+                        <IoCheckmarkDoneOutline />
+                      </Button>
+                      <Button
+                        variant="icon"
+                        title="Editar atividade"
+                        onClick={(e) => { e.stopPropagation(); abrirEditarAtividade(atividade); }}
+                      >
+                        <IoPencilOutline />
+                      </Button>
+                      <Button
+                        variant="icon-danger"
+                        title="Remover atividade"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setModal({
+                            tipo: "remover-atividade",
+                            atividadeId: atividade.id,
+                          });
+                        }}
+                      >
+                        <IoTrashOutline />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </section>
       </div>

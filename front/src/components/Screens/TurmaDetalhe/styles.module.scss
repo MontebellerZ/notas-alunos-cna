@@ -114,6 +114,10 @@
   box-shadow: 0 2px 8px rgba(var(--color-shadow-rgb), 0.06);
 }
 
+.sectionCollapsible {
+  gap: 0;
+}
+
 .sectionHeader {
   display: flex;
   align-items: center;
@@ -133,6 +137,41 @@
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-primary);
+}
+
+.toggleIcon {
+  display: inline-flex;
+  transition: transform 0.24s ease;
+}
+
+.toggleIconOpen {
+  transform: rotate(-180deg);
+}
+
+.collapsibleContent {
+  display: grid;
+  grid-template-rows: 1fr;
+  margin-top: 0.75rem;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    grid-template-rows 0.24s ease,
+    margin-top 0.24s ease,
+    opacity 0.2s ease,
+    transform 0.24s ease;
+}
+
+.collapsibleContentClosed {
+  grid-template-rows: 0fr;
+  margin-top: 0;
+  opacity: 0;
+  transform: translateY(-0.25rem);
+  pointer-events: none;
+}
+
+.collapsibleInner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 @media (max-width: 720px) {
