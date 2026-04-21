@@ -1,2 +1,1 @@
 - paginação de alunos ta zuada
-- alterar o gráfico de distribuição de notas para mostrar um gráfico de barras vertical

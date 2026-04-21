@@ -216,21 +216,32 @@ class AtividadeRepository extends BaseRepository {
         },
         notas: {
           where: { ativo: true, aluno: { ativo: true } },
-          select: { alunoId: true, valor: true },
+          select: {
+            alunoId: true,
+            valor: true,
+            _count: { select: { notaItens: { where: { ativo: true, valor: { not: null } } } } },
+          },
         },
+        _count: { select: { atividadeItens: { where: { ativo: true } } } },
       },
     });
 
     if (!atividade) return null;
 
+    const totalItens = atividade._count.atividadeItens;
     const alunoIdsAtivos = new Set(atividade.turma.alunos.map((aluno) => aluno.alunoId));
     const notasAtivas = atividade.notas.filter((nota) => alunoIdsAtivos.has(nota.alunoId));
 
+    // nota sem pendências = sem itens na atividade, OU todos os itens avaliados
+    const notasSemPendencias = notasAtivas.filter(
+      (nota) => totalItens === 0 || nota._count.notaItens >= totalItens
+    );
+
     const totalAlunos = atividade.turma.alunos.length;
-    const avaliados = notasAtivas.length;
+    const avaliados = notasSemPendencias.length;
     const pendentes = totalAlunos - avaliados;
 
-    const valores = notasAtivas
+    const valores = notasSemPendencias
       .map((nota) => nota.valor)
       .filter((valor): valor is number => valor !== null);
 
