@@ -1,4 +1,3 @@
 - permitir o usuário colapsar a lista de alunos e a lista de atividades na tela da turma
 - paginação de alunos ta zuada
-- mantenha a coluna de aluno fixed na tela de avaliação para que facilite a visão do usuário caso ele role horizontalmente para preencher a avaliação dos itens
 - alterar o gráfico de distribuição de notas para mostrar um gráfico de barras vertical
