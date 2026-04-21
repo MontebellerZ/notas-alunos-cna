@@ -11,6 +11,8 @@ import {
   IoPencilOutline,
   IoCheckmarkDoneOutline,
   IoBarChartOutline,
+  IoChevronDownOutline,
+  IoChevronUpOutline,
 } from "react-icons/io5";
 import TurmaService from "../../../services/turma.service";
 import AulaService from "../../../services/aula.service";
@@ -46,6 +48,8 @@ type ModalState =
   | { tipo: "remover-aluno"; alunoId: number; nome: string }
   | { tipo: "remover-atividade"; atividadeId: number };
 
+type SecaoColapsavel = "alunos" | "atividades";
+
 const formVazio: TTurmaCreate = {
   nome: "",
   sala: "",
@@ -72,6 +76,10 @@ function TurmaDetalhe() {
   const [reloadKey, setReloadKey] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [modal, setModal] = useState<ModalState>({ tipo: "fechado" });
+  const [secoesAbertas, setSecoesAbertas] = useState<Record<SecaoColapsavel, boolean>>({
+    alunos: true,
+    atividades: true,
+  });
 
   // Formulário: editar turma
   const [turmaForm, setTurmaForm] = useState<TTurmaCreate>(formVazio);
@@ -96,6 +104,12 @@ function TurmaDetalhe() {
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const recarregar = () => setReloadKey((k) => k + 1);
+  const alternarSecao = (secao: SecaoColapsavel) => {
+    setSecoesAbertas((estadoAtual) => ({
+      ...estadoAtual,
+      [secao]: !estadoAtual[secao],
+    }));
+  };
 
   useEffect(() => {
     if (!Number.isFinite(turmaId)) {
@@ -510,101 +524,131 @@ function TurmaDetalhe() {
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3 className={styles.sectionTitle}>Alunos</h3>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setModal({ tipo: "vincular-aluno" })}
-            >
-              <IoPersonAddOutline /> Vincular aluno
-            </Button>
+            <div className={styles.sectionHeaderActions}>
+              <Button
+                variant="secondary"
+                size="sm"
+                title={secoesAbertas.alunos ? "Ocultar lista de alunos" : "Mostrar lista de alunos"}
+                aria-expanded={secoesAbertas.alunos}
+                aria-controls="turma-alunos-conteudo"
+                onClick={() => alternarSecao("alunos")}
+              >
+                {secoesAbertas.alunos ? <IoChevronUpOutline /> : <IoChevronDownOutline />}
+                {secoesAbertas.alunos ? "Ocultar" : "Mostrar"}
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setModal({ tipo: "vincular-aluno" })}
+              >
+                <IoPersonAddOutline /> Vincular aluno
+              </Button>
+            </div>
           </div>
-          {turma.alunos.length === 0 ? (
-            <p className={styles.empty}>Nenhum aluno nesta turma.</p>
-          ) : (
-            <ul className={styles.itemList}>
-              {turma.alunos.map(({ aluno }) => (
-                <li key={aluno.id} className={styles.item}>
-                  <span className={styles.itemMain}>{aluno.nome}</span>
-                  {aluno.idade && (
-                    <span className={styles.itemSub}>{aluno.idade} anos</span>
-                  )}
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    title="Remover aluno da turma"
-                    onClick={() =>
-                      setModal({
-                        tipo: "remover-aluno",
-                        alunoId: aluno.id,
-                        nome: aluno.nome,
-                      })
-                    }
-                  >
-                    <IoTrashOutline />
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          )}
+          <div id="turma-alunos-conteudo" hidden={!secoesAbertas.alunos}>
+            {turma.alunos.length === 0 ? (
+              <p className={styles.empty}>Nenhum aluno nesta turma.</p>
+            ) : (
+              <ul className={styles.itemList}>
+                {turma.alunos.map(({ aluno }) => (
+                  <li key={aluno.id} className={styles.item}>
+                    <span className={styles.itemMain}>{aluno.nome}</span>
+                    {aluno.idade && (
+                      <span className={styles.itemSub}>{aluno.idade} anos</span>
+                    )}
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      title="Remover aluno da turma"
+                      onClick={() =>
+                        setModal({
+                          tipo: "remover-aluno",
+                          alunoId: aluno.id,
+                          nome: aluno.nome,
+                        })
+                      }
+                    >
+                      <IoTrashOutline />
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </section>
 
         {/* ── Atividades ─────────────────────────────────── */}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3 className={styles.sectionTitle}>Atividades</h3>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setModal({ tipo: "nova-atividade" })}
-            >
-              <IoAddOutline /> Nova atividade
-            </Button>
+            <div className={styles.sectionHeaderActions}>
+              <Button
+                variant="secondary"
+                size="sm"
+                title={secoesAbertas.atividades ? "Ocultar lista de atividades" : "Mostrar lista de atividades"}
+                aria-expanded={secoesAbertas.atividades}
+                aria-controls="turma-atividades-conteudo"
+                onClick={() => alternarSecao("atividades")}
+              >
+                {secoesAbertas.atividades ? <IoChevronUpOutline /> : <IoChevronDownOutline />}
+                {secoesAbertas.atividades ? "Ocultar" : "Mostrar"}
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setModal({ tipo: "nova-atividade" })}
+              >
+                <IoAddOutline /> Nova atividade
+              </Button>
+            </div>
           </div>
-          {turma.atividades.length === 0 ? (
-            <p className={styles.empty}>Nenhuma atividade cadastrada.</p>
-          ) : (
-            <ul className={styles.itemList}>
-              {turma.atividades.map((atividade) => (
-                <li
-                  key={atividade.id}
-                  className={`${styles.item} ${styles.itemClickable}`}
-                  onClick={() => navigate(`/main/atividades/${atividade.id}`)}
-                >
-                  <span className={styles.itemMain}>{atividade.capitulo}</span>
-                  {atividade.peso != null && (
-                    <span className={styles.itemSub}>Peso: {atividade.peso}</span>
-                  )}
-                  <Button
-                    variant="icon"
-                    title="Avaliar alunos"
-                    onClick={(e) => { e.stopPropagation(); navigate(`/main/atividades/${atividade.id}/avaliacao`); }}
+          <div id="turma-atividades-conteudo" hidden={!secoesAbertas.atividades}>
+            {turma.atividades.length === 0 ? (
+              <p className={styles.empty}>Nenhuma atividade cadastrada.</p>
+            ) : (
+              <ul className={styles.itemList}>
+                {turma.atividades.map((atividade) => (
+                  <li
+                    key={atividade.id}
+                    className={`${styles.item} ${styles.itemClickable}`}
+                    onClick={() => navigate(`/main/atividades/${atividade.id}`)}
                   >
-                    <IoCheckmarkDoneOutline />
-                  </Button>
-                  <Button
-                    variant="icon"
-                    title="Editar atividade"
-                    onClick={(e) => { e.stopPropagation(); abrirEditarAtividade(atividade); }}
-                  >
-                    <IoPencilOutline />
-                  </Button>
-                  <Button
-                    variant="icon-danger"
-                    title="Remover atividade"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModal({
-                        tipo: "remover-atividade",
-                        atividadeId: atividade.id,
-                      });
-                    }}
-                  >
-                    <IoTrashOutline />
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          )}
+                    <span className={styles.itemMain}>{atividade.capitulo}</span>
+                    {atividade.peso != null && (
+                      <span className={styles.itemSub}>Peso: {atividade.peso}</span>
+                    )}
+                    <Button
+                      variant="icon"
+                      title="Avaliar alunos"
+                      onClick={(e) => { e.stopPropagation(); navigate(`/main/atividades/${atividade.id}/avaliacao`); }}
+                    >
+                      <IoCheckmarkDoneOutline />
+                    </Button>
+                    <Button
+                      variant="icon"
+                      title="Editar atividade"
+                      onClick={(e) => { e.stopPropagation(); abrirEditarAtividade(atividade); }}
+                    >
+                      <IoPencilOutline />
+                    </Button>
+                    <Button
+                      variant="icon-danger"
+                      title="Remover atividade"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModal({
+                          tipo: "remover-atividade",
+                          atividadeId: atividade.id,
+                        });
+                      }}
+                    >
+                      <IoTrashOutline />
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </section>
       </div>
 

@@ -121,10 +121,34 @@
   gap: 0.75rem;
 }
 
+.sectionHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .sectionTitle {
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-primary);
+}
+
+@media (max-width: 720px) {
+  .sectionHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sectionHeaderActions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .sectionHeaderActions > * {
+    flex: 1;
+  }
 }
 
 /* ── Item list ───────────────────────────────────────── */
