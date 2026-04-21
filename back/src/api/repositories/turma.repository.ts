@@ -2,10 +2,7 @@ import BaseRepository from "./base.repository";
 import prisma from "../../../prisma";
 import { randomUUID } from "crypto";
 import type { UserCtx } from "../middleware/auth.middleware";
-
-function userFilter(ctx?: UserCtx) {
-  return ctx && !ctx.isAdmin ? { usuarioId: ctx.usuarioId } : {};
-}
+import { activeTurmaWhere } from "./activeFilters";
 
 export interface AulaJson {
   id: string;
@@ -28,7 +25,7 @@ class TurmaRepository extends BaseRepository {
 
   async getAll(ctx?: UserCtx) {
     const turmas = await prisma.turma.findMany({
-      where: { ativo: true, ...userFilter(ctx) },
+      where: activeTurmaWhere(ctx),
       orderBy: { nome: "asc" },
     });
     return turmas;
@@ -36,7 +33,7 @@ class TurmaRepository extends BaseRepository {
 
   async getPaginated(page: number, limit: number, ctx?: UserCtx) {
     const skip = (page - 1) * limit;
-    const where = { ativo: true, ...userFilter(ctx) };
+    const where = activeTurmaWhere(ctx);
     const [items, total] = await Promise.all([
       prisma.turma.findMany({ where, orderBy: { nome: "asc" }, skip, take: limit }),
       prisma.turma.count({ where }),
@@ -46,10 +43,10 @@ class TurmaRepository extends BaseRepository {
 
   async getByIdWithDetails(id: number, ctx?: UserCtx) {
     const turma = await prisma.turma.findFirst({
-      where: { id, ...userFilter(ctx) },
+      where: { id, ...activeTurmaWhere(ctx) },
       include: {
         alunos: {
-          where: { ativo: true },
+          where: { ativo: true, aluno: { ativo: true } },
           include: { aluno: true },
           orderBy: { aluno: { nome: "asc" } },
         },
@@ -64,7 +61,7 @@ class TurmaRepository extends BaseRepository {
   }
 
   async adicionarAula(turmaId: number, dia: string, horario: string) {
-    const turma = await prisma.turma.findUnique({ where: { id: turmaId } });
+    const turma = await prisma.turma.findFirst({ where: { id: turmaId, ativo: true } });
     if (!turma) return null;
 
     const aulas = parseAulas(turma.aulasJson);
@@ -80,7 +77,7 @@ class TurmaRepository extends BaseRepository {
   }
 
   async atualizarAula(turmaId: number, aulaId: string, dia: string, horario: string) {
-    const turma = await prisma.turma.findUnique({ where: { id: turmaId } });
+    const turma = await prisma.turma.findFirst({ where: { id: turmaId, ativo: true } });
     if (!turma) return null;
 
     const aulas = parseAulas(turma.aulasJson);
@@ -98,7 +95,7 @@ class TurmaRepository extends BaseRepository {
   }
 
   async removerAula(turmaId: number, aulaId: string) {
-    const turma = await prisma.turma.findUnique({ where: { id: turmaId } });
+    const turma = await prisma.turma.findFirst({ where: { id: turmaId, ativo: true } });
     if (!turma) return false;
 
     const aulas = parseAulas(turma.aulasJson);
@@ -114,6 +111,13 @@ class TurmaRepository extends BaseRepository {
   }
 
   async vincularAluno(turmaId: number, alunoId: number) {
+    const [turma, aluno] = await Promise.all([
+      prisma.turma.findFirst({ where: { id: turmaId, ativo: true }, select: { id: true } }),
+      prisma.aluno.findFirst({ where: { id: alunoId, ativo: true }, select: { id: true } }),
+    ]);
+
+    if (!turma || !aluno) return null;
+
     return await prisma.turmaAluno.upsert({
       where: { turmaId_alunoId: { turmaId, alunoId } },
       update: { ativo: true },
@@ -122,6 +126,19 @@ class TurmaRepository extends BaseRepository {
   }
 
   async desvincularAluno(turmaId: number, alunoId: number) {
+    const vinculo = await prisma.turmaAluno.findFirst({
+      where: {
+        turmaId,
+        alunoId,
+        ativo: true,
+        turma: { ativo: true },
+        aluno: { ativo: true },
+      },
+      select: { turmaId: true, alunoId: true },
+    });
+
+    if (!vinculo) return null;
+
     return await prisma.turmaAluno.update({
       where: { turmaId_alunoId: { turmaId, alunoId } },
       data: { ativo: false },
@@ -130,7 +147,7 @@ class TurmaRepository extends BaseRepository {
 
   async getAgenda(ctx?: UserCtx) {
     const turmas = await prisma.turma.findMany({
-      where: { ativo: true, ...userFilter(ctx) },
+      where: activeTurmaWhere(ctx),
       orderBy: { nome: "asc" },
       select: { id: true, nome: true, sala: true, situacao: true, aulasJson: true },
     });
@@ -148,7 +165,7 @@ class TurmaRepository extends BaseRepository {
 
   async getTurmaNotas(id: number, ctx?: UserCtx) {
     const turma = await prisma.turma.findFirst({
-      where: { id, ...userFilter(ctx) },
+      where: { id, ...activeTurmaWhere(ctx) },
       select: {
         id: true,
         nome: true,
@@ -158,7 +175,7 @@ class TurmaRepository extends BaseRepository {
           select: { id: true, capitulo: true, peso: true },
         },
         alunos: {
-          where: { ativo: true },
+          where: { ativo: true, aluno: { ativo: true } },
           orderBy: { aluno: { nome: "asc" } },
           select: { aluno: { select: { id: true, nome: true } } },
         },
@@ -179,12 +196,28 @@ class TurmaRepository extends BaseRepository {
     const itensCountMap = new Map(atividadeItensCount.map((a) => [a.atividadeId, a._count.id]));
 
     const notas = await prisma.nota.findMany({
-      where: { atividadeId: { in: atividadeIds }, alunoId: { in: alunoIds }, ativo: true },
+      where: {
+        atividadeId: { in: atividadeIds },
+        alunoId: { in: alunoIds },
+        ativo: true,
+        aluno: { ativo: true },
+        atividade: { ativo: true, turma: activeTurmaWhere(ctx) },
+      },
       select: {
         alunoId: true,
         atividadeId: true,
         valor: true,
-        _count: { select: { notaItens: { where: { ativo: true, valor: { not: null } } } } },
+        _count: {
+          select: {
+            notaItens: {
+              where: {
+                ativo: true,
+                valor: { not: null },
+                atividadeItem: { ativo: true },
+              },
+            },
+          },
+        },
       },
     });
 

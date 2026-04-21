@@ -1,42 +1,46 @@
 import prisma from "../../../prisma";
 import type { UserCtx } from "../middleware/auth.middleware";
+import { activeTurmaWhere } from "./activeFilters";
 
 class DashboardRepository {
   async getDashboard(ctx?: UserCtx) {
-    const turmaWhere = { ativo: true, ...(ctx && !ctx.isAdmin ? { usuarioId: ctx.usuarioId } : {}) };
+    const turmaWhere = activeTurmaWhere(ctx);
 
-    // 1. Totais simples
-    const [totalTurmas, totalAlunos, totalAtividades] = await Promise.all([
+    const [totalTurmas, totalAtividades, turmas] = await Promise.all([
       prisma.turma.count({ where: turmaWhere }),
-      prisma.aluno.count({ where: { ativo: true } }),
       prisma.atividade.count({ where: { ativo: true, turma: turmaWhere } }),
+      prisma.turma.findMany({
+        where: turmaWhere,
+        orderBy: { nome: "asc" },
+        select: {
+          id: true,
+          nome: true,
+          situacao: true,
+          atividades: {
+            where: { ativo: true },
+            select: { id: true, capitulo: true },
+          },
+          alunos: {
+            where: { ativo: true, aluno: { ativo: true } },
+            select: { alunoId: true },
+          },
+        },
+      }),
     ]);
 
-    // 2. Turmas com atividades e alunos vinculados
-    const turmas = await prisma.turma.findMany({
-      where: turmaWhere,
-      orderBy: { nome: "asc" },
-      select: {
-        id: true,
-        nome: true,
-        situacao: true,
-        atividades: {
-          where: { ativo: true },
-          select: { id: true, capitulo: true },
-        },
-        alunos: {
-          where: { ativo: true },
-          select: { alunoId: true },
-        },
-      },
-    });
+    const totalAlunos = new Set(turmas.flatMap((turma) => turma.alunos.map((aluno) => aluno.alunoId))).size;
 
-    // 3. Notas avaliadas para os pares (aluno, atividade) relevantes
     const atividadeIds = turmas.flatMap((t) => t.atividades.map((a) => a.id));
     const alunoIds = turmas.flatMap((t) => t.alunos.map((a) => a.alunoId));
 
     const notas = await prisma.nota.findMany({
-      where: { atividadeId: { in: atividadeIds }, alunoId: { in: alunoIds }, ativo: true },
+      where: {
+        atividadeId: { in: atividadeIds },
+        alunoId: { in: alunoIds },
+        ativo: true,
+        aluno: { ativo: true },
+        atividade: { ativo: true, turma: turmaWhere },
+      },
       select: { atividadeId: true, alunoId: true, valor: true },
     });
 

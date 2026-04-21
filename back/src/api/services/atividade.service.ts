@@ -25,11 +25,15 @@ class AtividadeService extends BaseService {
   }
 
   async getByIdWithDetails(id: number) {
-    return await atividadeRepository.getByIdWithDetails(id);
+    const atividade = await atividadeRepository.getByIdWithDetails(id);
+    if (!atividade) throw new NotFoundError("Atividade não encontrada.");
+    return atividade;
   }
 
   async getAvaliacaoData(id: number) {
-    return await atividadeRepository.getAvaliacaoData(id);
+    const atividade = await atividadeRepository.getAvaliacaoData(id);
+    if (!atividade) throw new NotFoundError("Atividade não encontrada.");
+    return atividade;
   }
 
   async salvarAvaliacao(
@@ -37,7 +41,9 @@ class AtividadeService extends BaseService {
     entradas: { alunoId: number; atividadeItemId: number; valor: number }[],
     deletar: { alunoId: number; atividadeItemId: number }[] = []
   ) {
-    return await atividadeRepository.salvarAvaliacao(atividadeId, entradas, deletar);
+    const salvou = await atividadeRepository.salvarAvaliacao(atividadeId, entradas, deletar);
+    if (!salvou) throw new NotFoundError("Atividade não encontrada.");
+    return salvou;
   }
 
   async getRelatorio(id: number) {

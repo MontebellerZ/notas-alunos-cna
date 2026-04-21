@@ -1,8 +1,7 @@
-import Consts from "../../config/consts";
-
 interface PrismaDelegate {
   findMany: (args?: any) => Promise<any[]>;
   findUnique: (args: any) => Promise<any | null>;
+  findFirst: (args: any) => Promise<any | null>;
   create: (args: any) => Promise<any>;
   update: (args: any) => Promise<any>;
   count: (args?: any) => Promise<number>;
@@ -35,7 +34,7 @@ class BaseRepository {
   }
 
   async getById(id: number) {
-    return await this.delegate.findUnique({ where: { id } });
+    return await this.delegate.findFirst({ where: { id, ativo: true } });
   }
 
   async create(data: any) {
@@ -44,6 +43,8 @@ class BaseRepository {
 
   async updateById(id: number, data: any) {
     try {
+      const existing = await this.getById(id);
+      if (!existing) return null;
       return await this.delegate.update({ where: { id }, data });
     } catch (e: any) {
       if (e?.code === "P2025") return null;
@@ -53,6 +54,8 @@ class BaseRepository {
 
   async deleteById(id: number) {
     try {
+      const existing = await this.getById(id);
+      if (!existing) return false;
       await this.delegate.update({ where: { id }, data: { ativo: false } });
       return true;
     } catch (e: any) {

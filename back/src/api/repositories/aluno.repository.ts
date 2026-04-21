@@ -1,12 +1,7 @@
 import BaseRepository from "./base.repository";
 import prisma from "../../../prisma";
 import type { UserCtx } from "../middleware/auth.middleware";
-
-function userFilter(ctx?: UserCtx) {
-  return ctx && !ctx.isAdmin
-    ? { turmas: { some: { ativo: true, turma: { ativo: true, usuarioId: ctx.usuarioId } } } }
-    : {};
-}
+import { activeAlunoWhere, activeTurmaWhere } from "./activeFilters";
 
 class AlunoRepository extends BaseRepository {
   constructor() {
@@ -15,14 +10,14 @@ class AlunoRepository extends BaseRepository {
 
   async getAll(ctx?: UserCtx) {
     return await prisma.aluno.findMany({
-      where: { ativo: true, ...userFilter(ctx) },
+      where: activeAlunoWhere(ctx),
       orderBy: { nome: "asc" },
     });
   }
 
   async getPaginated(page: number, limit: number, ctx?: UserCtx) {
     const skip = (page - 1) * limit;
-    const where = { ativo: true, ...userFilter(ctx) };
+    const where = activeAlunoWhere(ctx);
     const [items, total] = await Promise.all([
       prisma.aluno.findMany({ where, orderBy: { nome: "asc" }, skip, take: limit }),
       prisma.aluno.count({ where }),
@@ -32,18 +27,18 @@ class AlunoRepository extends BaseRepository {
 
   async searchByNome(nome: string, ctx?: UserCtx) {
     return await prisma.aluno.findMany({
-      where: { ativo: true, nome: { contains: nome }, ...userFilter(ctx) },
+      where: { ...activeAlunoWhere(ctx), nome: { contains: nome } },
       orderBy: { nome: "asc" },
       take: 20,
     });
   }
 
   async getByIdWithDetails(id: number) {
-    return await prisma.aluno.findUnique({
-      where: { id },
+    return await prisma.aluno.findFirst({
+      where: { id, ativo: true },
       include: {
         turmas: {
-          where: { ativo: true },
+          where: { ativo: true, turma: { ativo: true } },
           include: { turma: true },
           orderBy: { turma: { nome: "asc" } },
         },
@@ -52,9 +47,9 @@ class AlunoRepository extends BaseRepository {
   }
 
   async getHistoricoNotas(id: number, ctx?: UserCtx) {
-    const turmaWhere = ctx && !ctx.isAdmin ? { usuarioId: ctx.usuarioId, ativo: true } : { ativo: true };
+    const turmaWhere = activeTurmaWhere(ctx);
     const turmaAlunos = await prisma.turmaAluno.findMany({
-      where: { alunoId: id, ativo: true, turma: turmaWhere },
+      where: { alunoId: id, ativo: true, aluno: { ativo: true }, turma: turmaWhere },
       orderBy: { turma: { nome: "asc" } },
       include: {
         turma: {
@@ -74,7 +69,13 @@ class AlunoRepository extends BaseRepository {
     const atividadeIds = turmaAlunos.flatMap((ta) => ta.turma.atividades.map((a) => a.id));
 
     const notas = await prisma.nota.findMany({
-      where: { alunoId: id, atividadeId: { in: atividadeIds }, ativo: true },
+      where: {
+        alunoId: id,
+        atividadeId: { in: atividadeIds },
+        ativo: true,
+        aluno: { ativo: true },
+        atividade: { ativo: true, turma: turmaWhere },
+      },
       select: { atividadeId: true, valor: true },
     });
 

@@ -50,11 +50,15 @@ class TurmaService extends BaseService {
   }
 
   async vincularAluno(turmaId: number, alunoId: number) {
-    return await turmaRepository.vincularAluno(turmaId, alunoId);
+    const vinculo = await turmaRepository.vincularAluno(turmaId, alunoId);
+    if (!vinculo) throw new NotFoundError("Turma ou aluno não encontrado.");
+    return vinculo;
   }
 
   async desvincularAluno(turmaId: number, alunoId: number) {
-    return await turmaRepository.desvincularAluno(turmaId, alunoId);
+    const vinculo = await turmaRepository.desvincularAluno(turmaId, alunoId);
+    if (!vinculo) throw new NotFoundError("Vínculo não encontrado.");
+    return vinculo;
   }
 
   async getAgenda(ctx?: UserCtx) {

@@ -3,7 +3,5 @@
 - permitir o usuário colapsar a lista de alunos e a lista de atividades na tela da turma
 - paginação de alunos ta zuada
 - na tela de dashboard a contabilização de pendências da turma está errada em todos os locais (não segue a nova regra), o mesmo segue pro progresso por turma, já que também é afetado pela regra
-- na tela de dashboard, o total de avaliações por turma está errado também, está contando com alunos inativos
-- total de alunos na tela de dashboard está mostrando alunos inativos
-- listagem de alunos na tela da turma está mostrando aluno inativo
-- todos os locais do sistema devem sempre mostrar apenas dados ativos
+- na tela de acompanhamento de notas, quando a linha está com o hover do mouse, ela está ficando por cima da coluna Aluno que está fixa na rolagem horizontal
+- mantenha a coluna de aluno fixed na tela de avaliação para que facilite a visão do usuário caso ele role horizontalmente para preencher a avaliação dos itens
