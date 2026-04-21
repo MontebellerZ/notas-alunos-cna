@@ -1,7 +1,4 @@
-- apagar os registros de item avaliação ao invés de desativar (hard delete)
-- implementar debounce de 2 segundos no salvamento automático da tela de avaliação
 - permitir o usuário colapsar a lista de alunos e a lista de atividades na tela da turma
 - paginação de alunos ta zuada
-- na tela de acompanhamento de notas, quando a linha está com o hover do mouse, ela está ficando por cima da coluna Aluno que está fixa na rolagem horizontal
 - mantenha a coluna de aluno fixed na tela de avaliação para que facilite a visão do usuário caso ele role horizontalmente para preencher a avaliação dos itens
 - alterar o gráfico de distribuição de notas para mostrar um gráfico de barras vertical

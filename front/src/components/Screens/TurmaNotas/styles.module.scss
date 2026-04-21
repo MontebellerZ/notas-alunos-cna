@@ -24,8 +24,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 /* ── Header ──────────────────────────────────────────── */
@@ -200,7 +205,7 @@
 
   &:hover .tdAluno,
   &:hover .td {
-    background: var(--color-hover, rgba(0, 0, 0, 0.02));
+    background: var(--color-hover, #eeeeee);
   }
 }
 
@@ -313,21 +318,27 @@
   color: #2e7d32;
   background: #f1f8e9;
 
-  &::before { background: #81c784; }
+  &::before {
+    background: #81c784;
+  }
 }
 
 .legendaZero {
   color: #c62828;
   background: #fce4ec;
 
-  &::before { background: #ef9a9a; }
+  &::before {
+    background: #ef9a9a;
+  }
 }
 
 .legendaNotaPendente {
   color: #e65100;
   background: #fff8e1;
 
-  &::before { background: #ffb74d; }
+  &::before {
+    background: #ffb74d;
+  }
 }
 
 .legendaPendente {
@@ -335,7 +346,9 @@
   background: var(--color-surface-raised, #f5f5f5);
   border: 1px solid var(--color-border);
 
-  &::before { background: #ccc; }
+  &::before {
+    background: #ccc;
+  }
 }
 
 .legendaHint {
