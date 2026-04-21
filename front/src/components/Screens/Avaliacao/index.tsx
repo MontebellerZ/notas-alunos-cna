@@ -192,13 +192,21 @@ function Avaliacao() {
       .finally(() => setIsSaving(false));
   }, [atividadeId, data, grade, savedGrade]);
 
-  // Auto-salvar quando grade muda e autoSalvar está ativo
+  // Auto-salvar quando grade muda e autoSalvar está ativo (debounce 2s)
   const userChanged = useRef(false);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
-    if (!userChanged.current || !autoSalvar || isSaving) return;
-    userChanged.current = false;
-    handleSalvar();
-  }, [grade, handleSalvar, autoSalvar, isSaving]);
+    if (!userChanged.current || !autoSalvar) return;
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      if (!userChanged.current) return;
+      userChanged.current = false;
+      handleSalvar();
+    }, 3000);
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    };
+  }, [grade, handleSalvar, autoSalvar]);
 
   const handleVoltar = () => {
     if (isDirty) {
