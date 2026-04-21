@@ -1,3 +1,4 @@
 - apagar os registros de item avaliação ao invés de desativar (hard delete)
 - implementar debounce de 2 segundos no salvamento automático da tela de avaliação
 - o total de pendentes na tela de acompanhamento de notas deve contabilizar também as que já possuem notas mas possuem itens pendentes
+- permitir o usuário colapsar a lista de alunos e a lista de atividades na tela da turma

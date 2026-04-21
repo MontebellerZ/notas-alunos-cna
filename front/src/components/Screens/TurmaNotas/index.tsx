@@ -214,6 +214,7 @@ export default function TurmaNotas() {
         <div className={styles.legenda}>
           <span className={`${styles.legendaItem} ${styles.legendaOk}`}>Com nota</span>
           <span className={`${styles.legendaItem} ${styles.legendaZero}`}>Nota zero</span>
+          <span className={`${styles.legendaItem} ${styles.legendaNotaPendente}`}>Nota com itens pendentes</span>
           <span className={`${styles.legendaItem} ${styles.legendaPendente}`}>Pendente</span>
           <span className={styles.legendaHint}>
             Clique no cabeçalho da atividade para abrir a avaliação.
