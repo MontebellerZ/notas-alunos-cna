@@ -1,5 +1,3 @@
 - apagar os registros de item avaliação ao invés de desativar (hard delete)
 - implementar debounce de 2 segundos no salvamento automático da tela de avaliação
-- remover o // eslint-disable-next-line react-hooks/exhaustive-deps da tela de avaliação e ajustar o warning corretamente
-- na tela de acompanhamento de notas, onde é possível ver as notas de cada aluno por atividade, nas atividades que possuirem nota mas estiverem com itens não avaliados deve-se aparecer a nota mas com a cor de pendente e uma exclaçamão ao lado direito da nota que deve possuir um title informando que ainda existem itens pendentes de avaliação para a nota daquele aluno
-- na tela de acompanhamento de notas, onde é possível ver as notas de cada aluno por atividade, mostrar todas as notas com duas casas decimais, até as inteiras
+- o total de pendentes na tela de acompanhamento de notas deve contabilizar também as que já possuem notas mas possuem itens pendentes

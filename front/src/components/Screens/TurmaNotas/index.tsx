@@ -18,11 +18,12 @@ import styles from "./styles.module.scss";
 
 function valorDisplay(valor: number | null): string {
   if (valor === null) return "—";
-  return valor % 1 === 0 ? String(valor) : valor.toFixed(2).replace(".", ",");
+  return String(Math.round(valor * 100) / 100);
 }
 
-function cellClass(avaliada: boolean, valor: number | null): string {
+function cellClass(avaliada: boolean, valor: number | null, itensPendentes: boolean): string {
   if (!avaliada) return styles.cellPendente;
+  if (itensPendentes) return styles.cellNotaPendente;
   if (valor === null || valor === 0) return styles.cellZero;
   return styles.cellOk;
 }
@@ -59,7 +60,9 @@ export default function TurmaNotas() {
         toast.error(String(err?.message ?? err));
         setIsLoading(false);
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [turmaId, navigate]);
 
   if (isLoading) {
@@ -86,10 +89,7 @@ export default function TurmaNotas() {
   const totalAlunos = data.alunos.length;
 
   // total de pares aluno × atividade pendentes
-  const totalPendentes = data.alunos.reduce(
-    (acc, aluno) => acc + pendentesCount(aluno.notas),
-    0
-  );
+  const totalPendentes = data.alunos.reduce((acc, aluno) => acc + pendentesCount(aluno.notas), 0);
   const totalPossivel = totalAlunos * totalAtividades;
   const totalAvaliadas = totalPossivel - totalPendentes;
 
@@ -97,11 +97,7 @@ export default function TurmaNotas() {
     <div className={styles.page}>
       {/* ── Header ──────────────────────────────────────── */}
       <div className={styles.header}>
-        <Button
-          variant="icon"
-          title="Voltar"
-          onClick={() => goBack(`/main/turmas/${turmaId}`)}
-        >
+        <Button variant="icon" title="Voltar" onClick={() => goBack(`/main/turmas/${turmaId}`)}>
           <IoArrowBackOutline />
         </Button>
         <div className={styles.headerInfo}>
@@ -151,9 +147,7 @@ export default function TurmaNotas() {
                       onClick={() => navigate(`/main/atividades/${atv.id}/avaliacao`)}
                     >
                       {atv.capitulo}
-                      {atv.peso != null && (
-                        <span className={styles.pesoTag}>p{atv.peso}</span>
-                      )}
+                      {atv.peso != null && <span className={styles.pesoTag}>p{atv.peso}</span>}
                       <IoOpenOutline className={styles.atvIcon} />
                     </button>
                   </th>
@@ -176,16 +170,36 @@ export default function TurmaNotas() {
                     {aluno.notas.map((nota) => (
                       <td
                         key={nota.atividadeId}
-                        className={`${styles.td} ${cellClass(nota.avaliada, nota.valor)}`}
-                        title={nota.avaliada ? `Nota: ${valorDisplay(nota.valor)}` : "Pendente"}
+                        className={`${styles.td} ${cellClass(nota.avaliada, nota.valor, nota.itensPendentes)}`}
+                        title={
+                          !nota.avaliada
+                            ? "Pendente"
+                            : nota.itensPendentes
+                              ? `Nota: ${valorDisplay(nota.valor)} — existem itens pendentes de avaliação`
+                              : `Nota: ${valorDisplay(nota.valor)}`
+                        }
                       >
-                        {nota.avaliada ? valorDisplay(nota.valor) : "—"}
+                        {nota.avaliada ? (
+                          <span className={styles.cellValorWrapper}>
+                            {valorDisplay(nota.valor)}
+                            {nota.itensPendentes && (
+                              <IoAlertCircleOutline
+                                className={styles.cellAlertIcon}
+                                title="Existem itens pendentes de avaliação"
+                              />
+                            )}
+                          </span>
+                        ) : (
+                          "—"
+                        )}
                       </td>
                     ))}
                     <td
                       className={`${styles.td} ${styles.tdPendentes} ${pendentes > 0 ? styles.tdPendentesWarn : styles.tdPendentesOk}`}
                     >
-                      {pendentes > 0 ? `${pendentes} pendente${pendentes !== 1 ? "s" : ""}` : "✓ ok"}
+                      {pendentes > 0
+                        ? `${pendentes} pendente${pendentes !== 1 ? "s" : ""}`
+                        : "✓ ok"}
                     </td>
                   </tr>
                 );

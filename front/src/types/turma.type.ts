@@ -41,6 +41,7 @@ export type TAlunoNotas = {
     atividadeId: number;
     valor: number | null;
     avaliada: boolean;
+    itensPendentes: boolean;
   }>;
 };
 

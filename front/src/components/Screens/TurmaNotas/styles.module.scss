@@ -249,6 +249,22 @@
   font-style: italic;
 }
 
+.cellNotaPendente {
+  color: #e65100;
+  background: #fff8e1;
+}
+
+.cellValorWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cellAlertIcon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
 /* Coluna de pendentes */
 
 .tdPendentes {

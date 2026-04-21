@@ -170,15 +170,34 @@ class TurmaRepository extends BaseRepository {
     const atividadeIds = turma.atividades.map((a) => a.id);
     const alunoIds = turma.alunos.map((ta) => ta.aluno.id);
 
+    // total de itens ativos por atividade
+    const atividadeItensCount = await prisma.atividadeItem.groupBy({
+      by: ["atividadeId"],
+      where: { atividadeId: { in: atividadeIds }, ativo: true },
+      _count: { id: true },
+    });
+    const itensCountMap = new Map(atividadeItensCount.map((a) => [a.atividadeId, a._count.id]));
+
     const notas = await prisma.nota.findMany({
       where: { atividadeId: { in: atividadeIds }, alunoId: { in: alunoIds }, ativo: true },
-      select: { alunoId: true, atividadeId: true, valor: true },
+      select: {
+        alunoId: true,
+        atividadeId: true,
+        valor: true,
+        _count: { select: { notaItens: { where: { ativo: true, valor: { not: null } } } } },
+      },
     });
 
-    const notaMap = new Map<number, Map<number, number | null>>();
+    type NotaInfo = { valor: number | null; itensPendentes: boolean };
+    const notaMap = new Map<number, Map<number, NotaInfo>>();
     for (const nota of notas) {
       if (!notaMap.has(nota.alunoId)) notaMap.set(nota.alunoId, new Map());
-      notaMap.get(nota.alunoId)!.set(nota.atividadeId, nota.valor);
+      const totalItens = itensCountMap.get(nota.atividadeId) ?? 0;
+      const itensPendentes = totalItens > 0 && nota._count.notaItens < totalItens;
+      notaMap.get(nota.alunoId)!.set(nota.atividadeId, {
+        valor: nota.valor,
+        itensPendentes,
+      });
     }
 
     return {
@@ -190,9 +209,11 @@ class TurmaRepository extends BaseRepository {
         nome: aluno.nome,
         notas: turma.atividades.map((a) => {
           const alunoNotas = notaMap.get(aluno.id);
-          const avaliada = alunoNotas?.has(a.id) ?? false;
-          const valor = avaliada ? (alunoNotas!.get(a.id) ?? null) : null;
-          return { atividadeId: a.id, valor, avaliada };
+          const notaInfo = alunoNotas?.get(a.id);
+          const avaliada = notaInfo !== undefined;
+          const valor = avaliada ? (notaInfo!.valor ?? null) : null;
+          const itensPendentes = avaliada ? notaInfo!.itensPendentes : false;
+          return { atividadeId: a.id, valor, avaliada, itensPendentes };
         }),
       })),
     };
