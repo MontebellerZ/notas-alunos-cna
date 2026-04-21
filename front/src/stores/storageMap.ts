@@ -6,5 +6,9 @@ export type StorageMap = {
   TabelaStorage: Record<string, string[]>;
   PreferenciasStorage: {
     avaliacaoAutoSalvar: boolean;
+    turmaDetalheSecoesAbertas: {
+      alunos: boolean;
+      atividades: boolean;
+    };
   };
 };

@@ -20,6 +20,7 @@ import AtividadeService from "../../../services/atividade.service";
 import type { TTurmaDetalhe, TTurmaCreate } from "../../../types/turma.type";
 import type { TAluno } from "../../../types/aluno.type";
 import type { TAtividade } from "../../../types/atividade.type";
+import PreferenciasStorage from "../../../stores/store/preferencias.store";
 import Button from "../../Shared/Button";
 import Modal from "../../Shared/Modal";
 import styles from "./styles.module.scss";
@@ -57,6 +58,11 @@ const formVazio: TTurmaCreate = {
   fim: "",
 };
 
+const secoesAbertasPadrao: Record<SecaoColapsavel, boolean> = {
+  alunos: true,
+  atividades: true,
+};
+
 function formatarData(data?: string | null) {
   if (!data) return null;
   const [ano, mes, dia] = data.split("-");
@@ -75,10 +81,9 @@ function TurmaDetalhe() {
   const [reloadKey, setReloadKey] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [modal, setModal] = useState<ModalState>({ tipo: "fechado" });
-  const [secoesAbertas, setSecoesAbertas] = useState<Record<SecaoColapsavel, boolean>>({
-    alunos: true,
-    atividades: true,
-  });
+  const [secoesAbertas, setSecoesAbertas] = useState<Record<SecaoColapsavel, boolean>>(
+    () => PreferenciasStorage.get().turmaDetalheSecoesAbertas ?? secoesAbertasPadrao,
+  );
 
   // Formulário: editar turma
   const [turmaForm, setTurmaForm] = useState<TTurmaCreate>(formVazio);
@@ -104,10 +109,16 @@ function TurmaDetalhe() {
 
   const recarregar = () => setReloadKey((k) => k + 1);
   const alternarSecao = (secao: SecaoColapsavel) => {
-    setSecoesAbertas((estadoAtual) => ({
-      ...estadoAtual,
-      [secao]: !estadoAtual[secao],
-    }));
+    setSecoesAbertas((estadoAtual) => {
+      const novoEstado = {
+        ...estadoAtual,
+        [secao]: !estadoAtual[secao],
+      };
+
+      PreferenciasStorage.patch({ turmaDetalheSecoesAbertas: novoEstado });
+
+      return novoEstado;
+    });
   };
 
   useEffect(() => {
