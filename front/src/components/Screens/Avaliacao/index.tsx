@@ -33,11 +33,7 @@ function buildInitialGrade(data: TAvaliacaoData): GradeMap {
   return map;
 }
 
-function calcTotal(
-  alunoId: number,
-  itens: TAtividadeItem[],
-  grade: GradeMap
-): number {
+function calcTotal(alunoId: number, itens: TAtividadeItem[], grade: GradeMap): number {
   const pesoTotal = itens.reduce((acc, item) => acc + item.peso, 0);
   if (pesoTotal === 0) return 0;
   const soma = itens.reduce((acc, item) => {
@@ -72,7 +68,7 @@ function Avaliacao() {
   const [grade, setGrade] = useState<GradeMap>({});
   const [savedGrade, setSavedGrade] = useState<GradeMap>({});
   const [autoSalvar, setAutoSalvar] = useState<boolean>(
-    () => PreferenciasStorage.get().avaliacaoAutoSalvar
+    () => PreferenciasStorage.get().avaliacaoAutoSalvar,
   );
   const [popover, setPopover] = useState<PopoverState>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -130,9 +126,7 @@ function Avaliacao() {
 
   const togglePopover = (alunoId: number, itemId: number) => {
     setPopover((prev) =>
-      prev?.alunoId === alunoId && prev?.itemId === itemId
-        ? null
-        : { alunoId, itemId }
+      prev?.alunoId === alunoId && prev?.itemId === itemId ? null : { alunoId, itemId },
     );
   };
 
@@ -202,10 +196,9 @@ function Avaliacao() {
   const userChanged = useRef(false);
   useEffect(() => {
     if (!userChanged.current || !autoSalvar || isSaving) return;
-    const timer = setTimeout(() => handleSalvar(), 0);
-    return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [grade]);
+    userChanged.current = false;
+    handleSalvar();
+  }, [grade, handleSalvar, autoSalvar, isSaving]);
 
   const handleVoltar = () => {
     if (isDirty) {
@@ -391,9 +384,7 @@ function Avaliacao() {
       {confirmSair && (
         <div className={styles.overlay}>
           <div className={styles.confirmBox}>
-            <p className={styles.confirmText}>
-              Há alterações não salvas. Deseja sair sem salvar?
-            </p>
+            <p className={styles.confirmText}>Há alterações não salvas. Deseja sair sem salvar?</p>
             <div className={styles.confirmActions}>
               <Button variant="secondary" onClick={() => setConfirmSair(false)}>
                 Cancelar
