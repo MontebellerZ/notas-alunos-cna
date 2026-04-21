@@ -4,4 +4,7 @@ export type StorageMap = {
   UsuarioStorage: TUsuario;
   TokenStorage: string;
   TabelaStorage: Record<string, string[]>;
+  PreferenciasStorage: {
+    avaliacaoAutoSalvar: boolean;
+  };
 };

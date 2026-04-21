@@ -14,6 +14,7 @@ import AtividadeService from "../../../services/atividade.service";
 import type { TAvaliacaoData } from "../../../types/atividade.type";
 import type { TAtividadeItem } from "../../../types/atividadeItem.type";
 import Button from "../../Shared/Button";
+import PreferenciasStorage from "../../../stores/store/preferencias.store";
 import styles from "./styles.module.scss";
 
 // 1 = certo | 0.5 = meio certo | 0 = errado | null = não avaliado
@@ -70,6 +71,9 @@ function Avaliacao() {
 
   const [grade, setGrade] = useState<GradeMap>({});
   const [savedGrade, setSavedGrade] = useState<GradeMap>({});
+  const [autoSalvar, setAutoSalvar] = useState<boolean>(
+    () => PreferenciasStorage.get().avaliacaoAutoSalvar
+  );
   const [popover, setPopover] = useState<PopoverState>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const [restantesPopover, setRestantesPopover] = useState<number | null>(null);
@@ -138,6 +142,7 @@ function Avaliacao() {
 
   const setRestantesValor = (alunoId: number, valor: ValorNota) => {
     if (valor === null || !data) return;
+    userChanged.current = true;
     setGrade((g) => {
       const updated = { ...g };
       for (const item of data.atividadeItens) {
@@ -152,6 +157,7 @@ function Avaliacao() {
   };
 
   const setValor = (alunoId: number, itemId: number, valor: ValorNota) => {
+    userChanged.current = true;
     const key = `${alunoId}-${itemId}`;
     setGrade((g) => ({ ...g, [key]: valor }));
     setPopover(null);
@@ -192,6 +198,15 @@ function Avaliacao() {
       .finally(() => setIsSaving(false));
   }, [atividadeId, data, grade, savedGrade]);
 
+  // Auto-salvar quando grade muda e autoSalvar está ativo
+  const userChanged = useRef(false);
+  useEffect(() => {
+    if (!userChanged.current || !autoSalvar || isSaving) return;
+    const timer = setTimeout(() => handleSalvar(), 0);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grade]);
+
   const handleVoltar = () => {
     if (isDirty) {
       setConfirmSair(true);
@@ -230,11 +245,27 @@ function Avaliacao() {
           <h2 className={styles.title}>{data.capitulo}</h2>
           <span className={styles.subtitulo}>{data.turma.nome}</span>
         </div>
+        <label className={styles.autoSalvarLabel}>
+          <span className={styles.autoSalvarTexto}>Salvar automaticamente</span>
+          <span className={styles.switchTrack}>
+            <input
+              type="checkbox"
+              className={styles.switchInput}
+              checked={autoSalvar}
+              onChange={(e) => {
+                const val = e.target.checked;
+                setAutoSalvar(val);
+                PreferenciasStorage.patch({ avaliacaoAutoSalvar: val });
+              }}
+            />
+            <span className={styles.switchThumb} />
+          </span>
+        </label>
         <Button
           variant="primary"
           size="sm"
           onClick={handleSalvar}
-          disabled={isSaving || !isDirty}
+          disabled={isSaving || !isDirty || autoSalvar}
         >
           <IoSaveOutline />
           {isSaving ? "Salvando..." : "Salvar"}
