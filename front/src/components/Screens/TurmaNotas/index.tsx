@@ -29,7 +29,7 @@ function cellClass(avaliada: boolean, valor: number | null, itensPendentes: bool
 }
 
 function pendentesCount(notas: TTurmaNotas["alunos"][number]["notas"]): number {
-  return notas.filter((n) => !n.avaliada).length;
+  return notas.filter((n) => !n.avaliada || n.itensPendentes).length;
 }
 
 // ── componente ────────────────────────────────────────────────────────────────
