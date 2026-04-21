@@ -28,7 +28,7 @@ function getIsAdmin(): boolean {
   }
 }
 
-const ITEMS_POR_PAGINA = 12;
+const ITEMS_POR_PAGINA = 40;
 
 type AlunoFormState = TAlunoCreate;
 

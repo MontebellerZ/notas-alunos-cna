@@ -8,7 +8,7 @@ import Button from "../../Shared/Button";
 import Modal from "../../Shared/Modal";
 import styles from "./styles.module.scss";
 
-const ITEMS_POR_PAGINA = 12;
+const ITEMS_POR_PAGINA = 40;
 
 type TurmaFormState = TTurmaCreate;
 
