@@ -12,6 +12,13 @@ class UsuarioRepository {
       data: { email: email.toLowerCase() },
     });
   }
+
+  async updateSenha(id: number, senhaHash: string) {
+    return await prisma.usuario.update({
+      where: { id },
+      data: { senha: senhaHash },
+    });
+  }
 }
 
 export default new UsuarioRepository();

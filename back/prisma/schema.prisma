@@ -10,6 +10,7 @@ model Usuario {
   id     Int     @id @default(autoincrement())
   email  String  @unique
   nome   String?
+  senha  String?
   turmas Turma[]
   admin  Boolean @default(false)
 }

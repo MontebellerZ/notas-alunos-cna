@@ -25,8 +25,6 @@ routes.use("/nota", notaRoutes);
 routes.use("/nota-item", notaItemRoutes);
 routes.use("/dashboard", dashboardRoutes);
 
-routes.use("/", (req, res) => res.send(`[${req.method} ${req.originalUrl}] ✅ Alive`));
-
 routes.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err);
 
