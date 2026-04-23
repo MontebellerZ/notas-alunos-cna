@@ -1,0 +1,2 @@
+- implementar infinite scroll nas telas de turmas e de alunos
+- melhorar o css da tela de perfil e do botão de perfil no cabeçalho
