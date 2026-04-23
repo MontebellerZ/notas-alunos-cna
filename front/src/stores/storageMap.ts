@@ -1,6 +1,7 @@
-import type { TUsuario } from "../types/usuario.type";
+import type { TUsuarioCredencial, TUsuario } from "../types/usuario.type";
 
 export type StorageMap = {
+  CredenciaisStorage: TUsuarioCredencial;
   UsuarioStorage: TUsuario;
   TokenStorage: string;
   TabelaStorage: Record<string, string[]>;

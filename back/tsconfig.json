@@ -3,6 +3,6 @@
     "resolveJsonModule": true,
     "target": "esnext",
     "module": "nodenext",
-    "types": ["node"]
+    "types": ["node", "multer"]
   }
 }

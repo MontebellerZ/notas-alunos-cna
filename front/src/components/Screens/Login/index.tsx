@@ -4,21 +4,22 @@ import UsuarioService from "../../../services/usuario.service";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import Button from "../../Shared/Button";
-import UsuarioStorage from "../../../stores/store/usuario.store";
+import CredenciaisStorage from "../../../stores/store/credenciais.store";
 import TokenStorage from "../../../stores/store/token.store";
+import UsuarioStorage from "../../../stores/store/usuario.store";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 function Login() {
   const navigate = useNavigate();
 
-  const usuarioSalvo = UsuarioStorage.get();
+  const credenciaisSalvas = CredenciaisStorage.get();
 
-  const [email, setEmail] = useState(usuarioSalvo?.email ?? "");
-  const [senha, setSenha] = useState(usuarioSalvo?.senha ?? "");
-  const [manter, setManter] = useState(!!usuarioSalvo);
+  const [email, setEmail] = useState(credenciaisSalvas?.email ?? "");
+  const [senha, setSenha] = useState(credenciaisSalvas?.senha ?? "");
+  const [manter, setManter] = useState(!!credenciaisSalvas);
   const [isLoading, setIsLoading] = useState(false);
   const [mostrarSenha, setMostrarSenha] = useState(false);
-  const [senhaManual, setSenhaManual] = useState(!usuarioSalvo?.senha);
+  const [senhaManual, setSenhaManual] = useState(!credenciaisSalvas?.senha);
 
   const SENHA_PLACEHOLDER = "______";
 
@@ -33,11 +34,12 @@ function Login() {
     setIsLoading(true);
 
     UsuarioService.Login(email.trim(), senha)
-      .then(({ token }) => {
+      .then(({ token, usuario }) => {
         toast.success(`Login realizado com sucesso!`);
         TokenStorage.save(token);
-        if (manter) UsuarioStorage.save({ email, senha });
-        else UsuarioStorage.delete();
+        UsuarioStorage.save(usuario);
+        if (manter) CredenciaisStorage.save({ email, senha });
+        else CredenciaisStorage.delete();
         navigate("/main");
       })
       .catch((err) => toast.error(err.toString()))

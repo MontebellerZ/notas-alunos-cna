@@ -11,6 +11,7 @@ import Agenda from "../components/Screens/Agenda";
 import AtividadeDetalhe from "../components/Screens/AtividadeDetalhe";
 import Avaliacao from "../components/Screens/Avaliacao";
 import AtividadeRelatorio from "../components/Screens/AtividadeRelatorio";
+import Perfil from "../components/Screens/Perfil";
 
 const router = createBrowserRouter([
   {
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "perfil",
+        element: <Perfil />,
       },
     ],
   },

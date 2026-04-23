@@ -53,3 +53,30 @@
     transform: translateY(0);
   }
 }
+
+.profileButton {
+  border: 1.5px solid rgba(var(--color-accent-mid-rgb), 0.28);
+  background: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: 170ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: rgba(var(--color-accent-mid-rgb), 0.6);
+    box-shadow: 0 6px 14px rgba(var(--color-shadow-rgb), 0.14);
+  }
+}
+
+.profileAvatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 999px;
+}

@@ -3,16 +3,19 @@ import BaseStorage from "./base.store";
 
 export default class UsuarioStorage extends BaseStorage {
   static readonly mapKey = "UsuarioStorage";
+  static readonly changedEvent = "usuario-sessao-atualizado";
 
-  static get() {
+  static get(): TUsuario | undefined {
     return this.localGet();
   }
 
   static save(usuario: TUsuario) {
-    return this.localSave(usuario);
+    this.localSave(usuario);
+    window.dispatchEvent(new Event(this.changedEvent));
   }
 
   static delete() {
-    return this.localDelete();
+    this.localDelete();
+    window.dispatchEvent(new Event(this.changedEvent));
   }
 }

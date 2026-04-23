@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router";
 import styles from "./styles.module.scss";
 import { IoLogOutOutline } from "react-icons/io5";
 import TokenStorage from "../../../stores/store/token.store";
+import CredenciaisStorage from "../../../stores/store/credenciais.store";
 import UsuarioStorage from "../../../stores/store/usuario.store";
 
 type MenuLateralProps = {
@@ -23,6 +24,7 @@ function MenuLateral({ isOpen, onClose }: MenuLateralProps) {
 
   function handleLogout() {
     TokenStorage.delete();
+    CredenciaisStorage.delete();
     UsuarioStorage.delete();
     onClose();
     navigate("/");
