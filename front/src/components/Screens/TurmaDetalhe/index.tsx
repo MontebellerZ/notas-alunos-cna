@@ -63,6 +63,12 @@ const secoesAbertasPadrao: Record<SecaoColapsavel, boolean> = {
   atividades: true,
 };
 
+const atividadeFormPadrao = {
+  capitulo: "",
+  peso: "",
+  valorTotal: "10",
+};
+
 function formatarData(data?: string | null) {
   if (!data) return null;
   const [ano, mes, dia] = data.split("-");
@@ -100,10 +106,10 @@ function TurmaDetalhe() {
   const [modoVincular, setModoVincular] = useState<"buscar" | "novo">("buscar");
 
   // Formulário: nova atividade
-  const [atividadeForm, setAtividadeForm] = useState({ capitulo: "", peso: "" });
+  const [atividadeForm, setAtividadeForm] = useState(atividadeFormPadrao);
 
   // Formulário: editar atividade
-  const [atividadeEditForm, setAtividadeEditForm] = useState({ capitulo: "", peso: "" });
+  const [atividadeEditForm, setAtividadeEditForm] = useState(atividadeFormPadrao);
 
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -152,7 +158,8 @@ function TurmaDetalhe() {
     setModal({ tipo: "fechado" });
     setAulaForm({ dia: "", horario: "" });
     setAulaEditForm({ dia: "", horario: "" });
-    setAtividadeForm({ capitulo: "", peso: "" });
+    setAtividadeForm(atividadeFormPadrao);
+    setAtividadeEditForm(atividadeFormPadrao);
     setSearchNome("");
     setSearchResults([]);
     setNovoAlunoForm({ nome: "", idade: "" });
@@ -350,10 +357,16 @@ function TurmaDetalhe() {
       toast.warn("Peso inválido.");
       return;
     }
+    const valorTotal = atividadeForm.valorTotal ? Number(atividadeForm.valorTotal) : 10;
+    if (!Number.isFinite(valorTotal) || valorTotal <= 0) {
+      toast.warn("Valor total inválido. Informe um número maior que zero.");
+      return;
+    }
     setIsSaving(true);
     AtividadeService.create({
       capitulo: atividadeForm.capitulo.trim(),
       peso: peso ?? null,
+      valorTotal,
       turmaId,
     })
       .then(() => {
@@ -369,6 +382,7 @@ function TurmaDetalhe() {
     setAtividadeEditForm({
       capitulo: atividade.capitulo,
       peso: atividade.peso != null ? String(atividade.peso) : "",
+      valorTotal: String(atividade.valorTotal),
     });
     setModal({ tipo: "editar-atividade", atividade });
   };
@@ -384,10 +398,16 @@ function TurmaDetalhe() {
       toast.warn("Peso inválido.");
       return;
     }
+    const valorTotal = atividadeEditForm.valorTotal ? Number(atividadeEditForm.valorTotal) : 10;
+    if (!Number.isFinite(valorTotal) || valorTotal <= 0) {
+      toast.warn("Valor total inválido. Informe um número maior que zero.");
+      return;
+    }
     setIsSaving(true);
     AtividadeService.update(modal.atividade.id, {
       capitulo: atividadeEditForm.capitulo.trim(),
       peso: peso ?? null,
+      valorTotal,
     })
       .then(() => {
         toast.success("Atividade atualizada!");
@@ -647,9 +667,10 @@ function TurmaDetalhe() {
                       onClick={() => navigate(`/main/atividades/${atividade.id}`)}
                     >
                       <span className={styles.itemMain}>{atividade.capitulo}</span>
-                      {atividade.peso != null && (
-                        <span className={styles.itemSub}>Peso: {atividade.peso}</span>
-                      )}
+                      <span className={styles.itemSub}>
+                        {atividade.peso != null ? `Peso: ${atividade.peso} · ` : ""}
+                        Total: {atividade.valorTotal}
+                      </span>
                       <Button
                         variant="icon"
                         title="Avaliar alunos"
@@ -918,6 +939,19 @@ function TurmaDetalhe() {
             onChange={(e) => setAtividadeForm((f) => ({ ...f, peso: e.target.value }))}
             disabled={isSaving}
           />
+
+          <label className={styles.label} htmlFor="atividade-valor-total">Valor total</label>
+          <input
+            id="atividade-valor-total"
+            className={styles.input}
+            type="number"
+            placeholder="Ex: 10"
+            min={0.1}
+            step={0.1}
+            value={atividadeForm.valorTotal}
+            onChange={(e) => setAtividadeForm((f) => ({ ...f, valorTotal: e.target.value }))}
+            disabled={isSaving}
+          />
         </div>
       </Modal>
 
@@ -960,6 +994,19 @@ function TurmaDetalhe() {
             step={0.1}
             value={atividadeEditForm.peso}
             onChange={(e) => setAtividadeEditForm((f) => ({ ...f, peso: e.target.value }))}
+            disabled={isSaving}
+          />
+
+          <label className={styles.label} htmlFor="atividade-edit-valor-total">Valor total</label>
+          <input
+            id="atividade-edit-valor-total"
+            className={styles.input}
+            type="number"
+            placeholder="Ex: 10"
+            min={0.1}
+            step={0.1}
+            value={atividadeEditForm.valorTotal}
+            onChange={(e) => setAtividadeEditForm((f) => ({ ...f, valorTotal: e.target.value }))}
             disabled={isSaving}
           />
         </div>

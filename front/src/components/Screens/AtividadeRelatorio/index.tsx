@@ -61,6 +61,8 @@ function AtividadeRelatorio() {
   }
 
   const maxCount = Math.max(...relatorio.faixas.map((f) => f.count), 1);
+  const notaReferenciaAlta = relatorio.valorTotal * 0.7;
+  const notaReferenciaMedia = relatorio.valorTotal * 0.5;
 
   return (
     <div className={styles.page}>
@@ -75,7 +77,7 @@ function AtividadeRelatorio() {
         </Button>
         <div className={styles.headerInfo}>
           <h2 className={styles.title}>{relatorio.capitulo}</h2>
-          <span className={styles.subtitulo}>{relatorio.turmaNome}</span>
+          <span className={styles.subtitulo}>{relatorio.turmaNome} · total {relatorio.valorTotal}</span>
         </div>
       </div>
 
@@ -116,9 +118,9 @@ function AtividadeRelatorio() {
               <div className={styles.estat}>
                 <span className={styles.estatLabel}>Média</span>
                 <span className={`${styles.estatValor} ${
-                  relatorio.media !== null && relatorio.media >= 7
+                  relatorio.media !== null && relatorio.media >= notaReferenciaAlta
                     ? styles.estatOk
-                    : relatorio.media !== null && relatorio.media >= 5
+                    : relatorio.media !== null && relatorio.media >= notaReferenciaMedia
                     ? styles.estatMedio
                     : styles.estatBaixo
                 }`}>

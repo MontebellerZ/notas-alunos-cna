@@ -26,7 +26,7 @@ class AtividadeService extends BaseService {
     return await this.get<TAtividadeRelatorio>(`/atividade/${id}/relatorio`);
   }
 
-  static async update(id: number, data: Partial<Pick<TAtividadeCreate, "capitulo" | "peso">>): Promise<TAtividade> {
+  static async update(id: number, data: Partial<Pick<TAtividadeCreate, "capitulo" | "peso" | "valorTotal">>): Promise<TAtividade> {
     return await this.put<TAtividade>(`/atividade/${id}`, data);
   }
 

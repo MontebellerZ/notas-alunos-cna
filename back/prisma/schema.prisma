@@ -54,6 +54,7 @@ model Atividade {
   id             Int             @id @default(autoincrement())
   capitulo       String
   peso           Float?
+  valorTotal     Float           @default(10)
   turma          Turma           @relation(fields: [turmaId], references: [id])
   turmaId        Int
   notas          Nota[]

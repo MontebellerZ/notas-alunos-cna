@@ -4,6 +4,7 @@ export type TAtividade = {
   id: number;
   capitulo: string;
   peso?: number | null;
+  valorTotal: number;
   turmaId: number;
   ativo: boolean;
 };
@@ -48,6 +49,7 @@ export type TAvaliacaoData = TAtividade & {
 export type TAtividadeRelatorio = {
   atividadeId: number;
   capitulo: string;
+  valorTotal: number;
   turmaId: number;
   turmaNome: string;
   total: number;

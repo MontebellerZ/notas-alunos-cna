@@ -33,14 +33,14 @@ function buildInitialGrade(data: TAvaliacaoData): GradeMap {
   return map;
 }
 
-function calcTotal(alunoId: number, itens: TAtividadeItem[], grade: GradeMap): number {
+function calcTotal(alunoId: number, itens: TAtividadeItem[], grade: GradeMap, valorTotal: number): number {
   const pesoTotal = itens.reduce((acc, item) => acc + item.peso, 0);
   if (pesoTotal === 0) return 0;
   const soma = itens.reduce((acc, item) => {
     const val = grade[`${alunoId}-${item.id}`];
     return acc + (val ?? 0) * item.peso;
   }, 0);
-  return (soma / pesoTotal) * 10;
+  return (soma / pesoTotal) * valorTotal;
 }
 
 type PopoverState = { alunoId: number; itemId: number } | null;
@@ -286,7 +286,7 @@ function Avaliacao() {
                 </th>
               ))}
               <th className={`${styles.th} ${styles.thRestantes}`}>Restantes</th>
-              <th className={`${styles.th} ${styles.thTotal}`}>Total</th>
+              <th className={`${styles.th} ${styles.thTotal}`}>Total ({data.valorTotal})</th>
             </tr>
           </thead>
           <tbody>
@@ -380,7 +380,7 @@ function Avaliacao() {
                   </div>
                 </td>
                 <td className={`${styles.td} ${styles.tdTotal}`}>
-                  {calcTotal(aluno.id, itens, grade).toFixed(2)}
+                  {calcTotal(aluno.id, itens, grade, data.valorTotal).toFixed(2)}
                 </td>
               </tr>
             ))}

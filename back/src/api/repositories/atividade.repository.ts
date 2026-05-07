@@ -91,6 +91,7 @@ class AtividadeRepository extends BaseRepository {
       const atividade = await tx.atividade.findFirst({
         where: { id: atividadeId, ...activeAtividadeWhere() },
         select: {
+          valorTotal: true,
           turma: {
             select: {
               alunos: {
@@ -190,7 +191,7 @@ class AtividadeRepository extends BaseRepository {
           const peso = pesoMap.get(notaItem.atividadeItemId) ?? 1;
           return acc + (notaItem.valor ?? 0) * peso;
         }, 0);
-        const total = pesoTotal > 0 ? (soma / pesoTotal) * 10 : 0;
+        const total = pesoTotal > 0 ? (soma / pesoTotal) * atividade.valorTotal : 0;
         await tx.nota.update({ where: { id: nota.id }, data: { valor: total } });
       }
 
@@ -204,6 +205,7 @@ class AtividadeRepository extends BaseRepository {
       select: {
         id: true,
         capitulo: true,
+        valorTotal: true,
         turma: {
           select: {
             id: true,
@@ -250,17 +252,37 @@ class AtividadeRepository extends BaseRepository {
     const min = valores.length > 0 ? Math.min(...valores) : null;
     const max = valores.length > 0 ? Math.max(...valores) : null;
 
+    const valorTotalAtividade = atividade.valorTotal;
+    const faixaLimites = Array.from({ length: 6 }, (_, index) => (valorTotalAtividade / 5) * index);
+    const formatFaixaValor = (value: number) => Number(value.toFixed(2)).toString().replace(".", ",");
+
     const faixas = [
-      { label: "0 – 2", count: valores.filter((valor) => valor < 2).length },
-      { label: "2 – 4", count: valores.filter((valor) => valor >= 2 && valor < 4).length },
-      { label: "4 – 6", count: valores.filter((valor) => valor >= 4 && valor < 6).length },
-      { label: "6 – 8", count: valores.filter((valor) => valor >= 6 && valor < 8).length },
-      { label: "8 – 10", count: valores.filter((valor) => valor >= 8).length },
+      {
+        label: `${formatFaixaValor(faixaLimites[0])} – ${formatFaixaValor(faixaLimites[1])}`,
+        count: valores.filter((valor) => valor < faixaLimites[1]).length,
+      },
+      {
+        label: `${formatFaixaValor(faixaLimites[1])} – ${formatFaixaValor(faixaLimites[2])}`,
+        count: valores.filter((valor) => valor >= faixaLimites[1] && valor < faixaLimites[2]).length,
+      },
+      {
+        label: `${formatFaixaValor(faixaLimites[2])} – ${formatFaixaValor(faixaLimites[3])}`,
+        count: valores.filter((valor) => valor >= faixaLimites[2] && valor < faixaLimites[3]).length,
+      },
+      {
+        label: `${formatFaixaValor(faixaLimites[3])} – ${formatFaixaValor(faixaLimites[4])}`,
+        count: valores.filter((valor) => valor >= faixaLimites[3] && valor < faixaLimites[4]).length,
+      },
+      {
+        label: `${formatFaixaValor(faixaLimites[4])} – ${formatFaixaValor(faixaLimites[5])}`,
+        count: valores.filter((valor) => valor >= faixaLimites[4]).length,
+      },
     ];
 
     return {
       atividadeId: atividade.id,
       capitulo: atividade.capitulo,
+      valorTotal: valorTotalAtividade,
       turmaId: atividade.turma.id,
       turmaNome: atividade.turma.nome,
       total: totalAlunos,
