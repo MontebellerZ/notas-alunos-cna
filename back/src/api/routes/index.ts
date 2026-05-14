@@ -9,6 +9,7 @@ import notaRoutes from "./nota.route";
 import notaItemRoutes from "./notaItem.route";
 import dashboardRoutes from "./dashboard.route";
 import { authMiddleware } from "../middleware/auth.middleware";
+import errorRoutes from "./error.route";
 
 const routes = Router();
 
@@ -25,15 +26,6 @@ routes.use("/nota", notaRoutes);
 routes.use("/nota-item", notaItemRoutes);
 routes.use("/dashboard", dashboardRoutes);
 
-routes.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(err);
-
-  if (err instanceof HttpError) {
-    res.status(err.code).send(err.message);
-    return;
-  }
-
-  res.status(500).send("Erro inesperado");
-});
+routes.use(errorRoutes);
 
 export default routes;
