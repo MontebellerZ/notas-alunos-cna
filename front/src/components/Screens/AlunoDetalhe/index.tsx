@@ -86,6 +86,14 @@ function AlunoDetalhe() {
       .finally(() => setIsSaving(false));
   };
 
+  const getNotaClass = (valor: number | null, valorTotal: number) => {
+    if (valor === null || valorTotal <= 0) return styles.historicoNotaBaixo;
+    const percentual = valor / valorTotal;
+    if (percentual >= 0.7) return styles.historicoNotaOk;
+    if (percentual >= 0.5) return styles.historicoNotaMedio;
+    return styles.historicoNotaBaixo;
+  };
+
   if (isLoading) {
     return (
       <div className={styles.page}>
@@ -182,7 +190,7 @@ function AlunoDetalhe() {
                   <span className={styles.historicoTurmaNome}>{turma.turmaNome}</span>
                   {turma.media !== null && (
                     <span className={styles.historicoMedia}>
-                      Média: {turma.media.toFixed(1)}
+                      Média: {turma.media.toFixed(2)}
                     </span>
                   )}
                 </div>
@@ -195,15 +203,11 @@ function AlunoDetalhe() {
                       <span className={styles.historicoAtvNome}>{atv.capitulo}</span>
                       {atv.avaliada ? (
                         <span
-                          className={`${styles.historicoNota} ${
-                            atv.valor !== null && atv.valor >= 7
-                              ? styles.historicoNotaOk
-                              : atv.valor !== null && atv.valor >= 5
-                              ? styles.historicoNotaMedio
-                              : styles.historicoNotaBaixo
-                          }`}
+                          className={`${styles.historicoNota} ${getNotaClass(atv.valor, atv.valorTotal)}`}
                         >
-                          {atv.valor !== null ? atv.valor.toFixed(1) : "—"}
+                          {atv.valor !== null
+                            ? `${atv.valor.toFixed(2)} / ${atv.valorTotal.toFixed(2)}`
+                            : "—"}
                         </span>
                       ) : (
                         <span className={styles.historicoPendente}>Pendente</span>

@@ -59,7 +59,15 @@ class AlunoRepository extends BaseRepository {
             atividades: {
               where: { ativo: true },
               orderBy: { id: "asc" },
-              select: { id: true, capitulo: true },
+              select: {
+                id: true,
+                capitulo: true,
+                valorTotal: true,
+                atividadeItens: {
+                  where: { ativo: true },
+                  select: { id: true, peso: true },
+                },
+              },
             },
           },
         },
@@ -68,25 +76,62 @@ class AlunoRepository extends BaseRepository {
 
     const atividadeIds = turmaAlunos.flatMap((ta) => ta.turma.atividades.map((a) => a.id));
 
-    const notas = await prisma.nota.findMany({
-      where: {
-        alunoId: id,
-        atividadeId: { in: atividadeIds },
-        ativo: true,
-        aluno: { ativo: true },
-        atividade: { ativo: true, turma: turmaWhere },
-      },
-      select: { atividadeId: true, valor: true },
-    });
+    const notas = atividadeIds.length
+      ? await prisma.nota.findMany({
+          where: {
+            alunoId: id,
+            atividadeId: { in: atividadeIds },
+            ativo: true,
+            aluno: { ativo: true },
+            atividade: { ativo: true, turma: turmaWhere },
+          },
+          orderBy: { id: "desc" },
+          select: {
+            atividadeId: true,
+            notaItens: {
+              where: { ativo: true, atividadeItem: { ativo: true } },
+              select: { atividadeItemId: true, valor: true },
+            },
+          },
+        })
+      : [];
 
-    const notaMap = new Map(notas.map((n) => [n.atividadeId, n.valor]));
+    // Em caso de registros antigos duplicados, usa a nota ativa mais recente da atividade.
+    const notaMap = new Map<number, (typeof notas)[number]>();
+    for (const nota of notas) {
+      if (!notaMap.has(nota.atividadeId)) {
+        notaMap.set(nota.atividadeId, nota);
+      }
+    }
+
+    const calcValor = (
+      atividade: { valorTotal: number; atividadeItens: { id: number; peso: number }[] },
+      nota: (typeof notas)[number] | undefined,
+    ) => {
+      if (!nota) return null;
+
+      const pesoTotal = atividade.atividadeItens.reduce((acc, item) => acc + item.peso, 0);
+      if (pesoTotal === 0) return 0;
+
+      const notaItemMap = new Map(
+        nota.notaItens.map((notaItem) => [notaItem.atividadeItemId, notaItem.valor ?? 0]),
+      );
+
+      const soma = atividade.atividadeItens.reduce((acc, item) => {
+        const valor = notaItemMap.get(item.id) ?? 0;
+        return acc + valor * item.peso;
+      }, 0);
+
+      return (soma / pesoTotal) * atividade.valorTotal;
+    };
 
     return turmaAlunos.map(({ turma }) => {
       const atividades = turma.atividades.map((a) => ({
         atividadeId: a.id,
         capitulo: a.capitulo,
+        valorTotal: a.valorTotal,
         avaliada: notaMap.has(a.id),
-        valor: notaMap.has(a.id) ? (notaMap.get(a.id) ?? null) : null,
+        valor: calcValor(a, notaMap.get(a.id)),
       }));
 
       const avaliadas = atividades.filter((a) => a.avaliada && a.valor !== null);

@@ -16,6 +16,7 @@ export type TAlunoDetalhe = TAluno & {
 export type TAlunoHistoricoAtividade = {
   atividadeId: number;
   capitulo: string;
+  valorTotal: number;
   avaliada: boolean;
   valor: number | null;
 };
